@@ -67,7 +67,7 @@ def readData(Address):
         logger.error("Error reading data: %s", str(e))
         return None
 
-if __name__ == '__main__':
+def askCommand():
     if connectConnection():
         while True:
             user_address = input("Enter the PLC address to read (e.g., DB1,WORD1122) or 'exit' to quit: ")
@@ -76,3 +76,6 @@ if __name__ == '__main__':
             readData(user_address)
     else:
         logger.error("Could not establish connection to the PLC.")
+
+if __name__ == '__main__':
+   askCommand()

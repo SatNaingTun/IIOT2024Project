@@ -126,8 +126,7 @@ def ReadMemory(byte,dataType):
 
         print(data)
 
-if __name__=='__main__':
-    # connected=connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102)
+def askCommand():
     connected=connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102)
 
     if(connected):
@@ -141,13 +140,18 @@ if __name__=='__main__':
             if user_address.lower() == 'exit':
                 break
             readData(user_address)
+    else:
+        logger.error("Disconnected")
+
+if __name__=='__main__':
+    askCommand()
+   
        
         # while(1):
         #     cmd=input("Enter Address Cmd to read PLC address\n")
         #     readData(cmd)
 
-    else:
-        logger.error("Disconnected")
+    
 
 
 # (db_number,dataType,addressNumber,lengthData)=string2Address("DB5,DWORD0")
