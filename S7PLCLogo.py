@@ -22,20 +22,28 @@ def contains_substring(string, substrings):
     return False
 
 def datatype2BitNumber(dataTypeName):
-    dataTypeBits = {'BOOL': 1, 'BYTE': 8, 'WORD': 16, 'INT': 16, 'DWORD': 32, 'REAL': 32, 'CHAR': 8, 'STRING': 254}
+    dataTypeBits = {'X': 1,'BOOL':1, 'BYTE': 8, 'WORD': 16, 'INT': 16, 'DWORD': 32, 'REAL': 32, 'CHAR': 8, 'STRING': 254}
     return dataTypeBits.get(dataTypeName, None)
 
 def string2Address(Address):
     commaIndex = Address.find(',')
     db_number = Address[2:commaIndex]
     typeNo = Address[commaIndex+1:]
-    dataTypes = ['BOOL', 'BYTE', 'DWORD', 'INT', 'WORD', 'REAL', 'CHAR', 'STRING']
+    dataTypes = ['BOOL', 'BYTE', 'DWORD', 'INT', 'WORD', 'REAL', 'CHAR', 'STRING','X']
     dataType = contains_substring(typeNo, dataTypes)
     if dataType is None:
         logger.error("Invalid data type in address: %s", Address)
         return None
-    addressNumber = typeNo[len(dataType):]
-    lengthData = datatype2BitNumber(dataType)
+    dotIndex = typeNo.find('.')
+    print("DotIndex",dotIndex)
+    if dotIndex<0:
+        addressNumber = typeNo[len(dataType):]
+        # print("My address Number1 is",addressNumber)
+        lengthData = datatype2BitNumber(dataType)
+    else:
+        addressNumber = typeNo[len(dataType):dotIndex]
+        # print("My address Number2 is",addressNumber)
+        lengthData = datatype2BitNumber(dataType)
     return (db_number, dataType, addressNumber, lengthData)
 
 def readData(Address):
@@ -46,7 +54,7 @@ def readData(Address):
     try:
         DB_bytearray = plc.db_read(int(dbNumber), int(addressNumber), int(lengthData))
         data = None
-        if dataType == "BOOL":
+        if dataType == "BOOL" or dataType=="X":
             data = snap7.util.get_bool(DB_bytearray, 0, int(addressNumber))
         elif dataType == "DWORD":
             data = snap7.util.get_dword(DB_bytearray, 0)
@@ -74,8 +82,12 @@ def askCommand():
             if user_address.lower() == 'exit':
                 break
             readData(user_address)
+            # string2Address(user_address)
     else:
         logger.error("Could not establish connection to the PLC.")
 
-if __name__ == '__main__':
-   askCommand()
+
+string2Address('DB1,X1024.0')
+
+# if __name__ == '__main__':
+#    askCommand()

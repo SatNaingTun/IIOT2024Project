@@ -21,23 +21,8 @@ def contains_substring(string, substrings):
     return False
 
 def datatype2BitNumber(dataTypeName):
-    if(dataTypeName=='BOOL'):
-        return 1
-    if(dataTypeName=='BYTE'):
-        return 8//4
-    if(dataTypeName=='WORD'):
-        return 16//4
-    if(dataTypeName=='INT'):
-        return 16//4
-    if(dataTypeName=='DWORD'):
-        return 32//4
-    if(dataTypeName=='REAL'):
-        # return 32//4
-        return 4
-    if(dataTypeName=='Char'):
-        return 8//4
-    if(dataTypeName=='STRING'):
-        return 254//4
+    dataTypeBits = {'X': 1,'BOOL':1, 'BYTE': 8, 'WORD': 16, 'INT': 16, 'DWORD': 32, 'REAL': 32, 'CHAR': 8, 'STRING': 254}
+    return dataTypeBits.get(dataTypeName, None)
 
 def string2Address(Address):
     commaIndex=Address.find(',')
@@ -45,7 +30,7 @@ def string2Address(Address):
     # print(db_number)
     typeNo=Address[commaIndex+1:]
     # print(typeNo)
-    dataTypes=['BOOL','BYTE','DWORD','INT','WORD','REAL','CHAR','STRING']
+    dataTypes=['BOOL','BYTE','DWORD','INT','WORD','REAL','CHAR','STRING','X']
     dataType=contains_substring(typeNo,dataTypes)
     # print(cmdDataType)
     addressNumber=typeNo[len(dataType):]
@@ -63,7 +48,7 @@ def readData(Address):
     # logger.debug(f"Raw data read from PLC DB: {DB_bytearray.hex()}")
     # total_prod = snap7.util.get_int(DB_bytearray,0)
     if(DB_bytearray is not None):
-        if(dataType=="BOOL"):
+        if(dataType=="BOOL" or dataType=="X"):
             data = snap7.util.get_bool(DB_bytearray,0)
 
         if(dataType=="DWORD"):
@@ -86,7 +71,11 @@ def readData(Address):
             data = snap7.util.get_fstring(DB_bytearray,0)
 
         print(data)
-    return data
+        return data
+    else:
+        logger.error("Invalid data type in address: %s", Address)
+        return None
+
 
 def writeData(Address):
     (dbNumber,dataType,addressNumber,lengthData)=string2Address(Address)
