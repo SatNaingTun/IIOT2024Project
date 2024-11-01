@@ -1,20 +1,18 @@
 import snap7
 import sys
 import logging
-# import snap7.type as t
-import struct
 
 
 logging.basicConfig(level=logging.INFO) 
 logger = logging.getLogger(__name__)
 
-def connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102):
-    global plc
-    plc = snap7.client.Client()
-    return plc.connect(address, rack, slot,Port)
+# def connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102):
+#     global plc
+#     plc = snap7.client.Client()
+#     return plc.connect(address, rack, slot,Port)
     
 
-def connectLogoConnection(address='192.168.200.2',tsap=0x0100,tsaplogo=0x0100,Port=102):
+def connectConnection(address='192.168.200.2',tsap=0x0100,tsaplogo=0x0100,Port=102):
     global plc
     plc=snap7.logo.Logo()
     return plc.connect(address,tsap,tsaplogo,tcp_port=Port)
@@ -38,8 +36,7 @@ def datatype2BitNumber(dataTypeName):
     if(dataTypeName=='DWORD'):
         return 32//4
     if(dataTypeName=='REAL'):
-        # return 32//4
-        return 4
+        return 16//4
     if(dataTypeName=='Char'):
         return 8//4
     if(dataTypeName=='STRING'):
@@ -65,8 +62,6 @@ def readData(Address):
     # print("dbnumber"+str(dbNumber)+"datatype"+str(dataType)+"AddressNumber"+str(addressNumber)+"Length"+str(lengthData))
     # DB_bytearray = plc.db_read(dbNumber,0,lengthData)
     DB_bytearray = plc.db_read(int(dbNumber),0,int(lengthData))
-    print(DB_bytearray)
-    # logger.debug(f"Raw data read from PLC DB: {DB_bytearray.hex()}")
     # total_prod = snap7.util.get_int(DB_bytearray,0)
     if(DB_bytearray is not None):
         if(dataType=="BOOL"):
@@ -80,7 +75,6 @@ def readData(Address):
     
         if(dataType=="REAL"):
             data = snap7.util.get_real(DB_bytearray,0)
-            # data = struct.unpack('!f', DB_bytearray)[0]
     
         if(dataType=="INT"):
             data = snap7.util.get_dint(DB_bytearray,0)
@@ -89,7 +83,7 @@ def readData(Address):
             data = snap7.util.get_char(DB_bytearray,0)
     
         if(dataType=="STRING"):
-            data = snap7.util.get_fstring(DB_bytearray,0)
+            data = snap7.util.get_string(DB_bytearray,0)
 
         print(data)
     return data
@@ -107,17 +101,12 @@ def writeData(Address):
 # plc.connect('192.168.200.250',0,1)
 
 if __name__=='__main__':
-    # connected=connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102)
-    connected=connectLogoConnection()
+    connected=connectConnection(address='192.168.200.2',tsap=0x0100,tsaplogo=0x0100)
 
     if(connected):
         logger.info("Connected")
         # readData("DB5,DWORD588")
-        # readData("DB5,WORD604")
-        # readData("DB5,REAL878")
-        # readData("DB1,WORD1122")
         readData("DB5,DWORD0")
-       
         # while(1):
         #     cmd=input("Enter Address Cmd to read PLC address\n")
         #     readData(cmd)
