@@ -70,7 +70,7 @@ def readData(Address):
 if __name__ == '__main__':
     if connectConnection():
         while True:
-            user_address = input("Enter the PLC address to read (e.g., DB5,DWORD0) or 'exit' to quit: ")
+            user_address = input("Enter the PLC address to read (e.g., DB1,WORD1122) or 'exit' to quit: ")
             if user_address.lower() == 'exit':
                 break
             readData(user_address)

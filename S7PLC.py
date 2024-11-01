@@ -2,7 +2,7 @@ import snap7
 import sys
 import logging
 # import snap7.type as t
-import struct
+from snap7.type import *
 
 
 logging.basicConfig(level=logging.INFO) 
@@ -12,13 +12,7 @@ def connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102):
     global plc
     plc = snap7.client.Client()
     return plc.connect(address, rack, slot,Port)
-    
-
-def connectLogoConnection(address='192.168.200.2',tsap=0x0100,tsaplogo=0x0100,Port=102):
-    global plc
-    plc=snap7.logo.Logo()
-    return plc.connect(address,tsap,tsaplogo,tcp_port=Port)
-    
+        
 
 def contains_substring(string, substrings):
     for substring in substrings:
@@ -106,9 +100,35 @@ def writeData(Address):
 # string2Address("DB5,DWORD0")
 # plc.connect('192.168.200.250',0,1)
 
+def ReadMemory(byte,dataType):
+    result=plc.read_area(Areas['MK'],0,byte,dataType)
+    if(dataType=="BOOL"):
+        data = snap7.util.get_bool(byte,0)
+
+    if(dataType=="DWORD"):
+        data = snap7.util.get_dword(byte,0)
+
+    if(dataType=="WORD"):
+        data = snap7.util.get_word(byte,0)
+    
+    if(dataType=="REAL"):
+        data = snap7.util.get_real(byte,0)
+            # data = struct.unpack('!f', byte)[0]
+    
+    if(dataType=="INT"):
+            data = snap7.util.get_dint(byte,0)
+
+    if(dataType=="CHAR"):
+        data = snap7.util.get_char(byte,0)
+    
+        if(dataType=="STRING"):
+            data = snap7.util.get_fstring(byte,0)
+
+        print(data)
+
 if __name__=='__main__':
     # connected=connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102)
-    connected=connectLogoConnection()
+    connected=connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102)
 
     if(connected):
         logger.info("Connected")
@@ -116,7 +136,11 @@ if __name__=='__main__':
         # readData("DB5,WORD604")
         # readData("DB5,REAL878")
         # readData("DB1,WORD1122")
-        readData("DB5,DWORD0")
+        while True:
+            user_address = input("Enter the PLC address to read (e.g., DB5,DWORD0) or 'exit' to quit: ")
+            if user_address.lower() == 'exit':
+                break
+            readData(user_address)
        
         # while(1):
         #     cmd=input("Enter Address Cmd to read PLC address\n")
