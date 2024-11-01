@@ -1,9 +1,22 @@
 import snap7
+import sys
+import logging
 
-plc = snap7.client.Client()
 
-def connectConnection(address='192.168.200.250',rack=0,slot=1):
-    plc.connect(address, rack, slot)
+logging.basicConfig(level=logging.INFO) 
+logger = logging.getLogger(__name__)
+
+def connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102):
+    global plc
+    plc = snap7.client.Client()
+    return plc.connect(address, rack, slot,Port)
+    
+
+def connectConnection(address='192.168.200.2',tsap=0x0100,tsaplogo=0x0100):
+    global plc
+    plc=snap7.logo.Logo()
+    return plc.connect(address,tsap,tsaplogo)
+    
 
 def contains_substring(string, substrings):
     for substring in substrings:
@@ -44,7 +57,7 @@ def string2Address(Address):
     return (db_number,dataType,addressNumber,lengthData)
     # return db_number
 
-def readAddress(Address):
+def readData(Address):
     (dbNumber,dataType,addressNumber,lengthData)=string2Address(Address)
     # print("dbnumber"+str(dbNumber)+"datatype"+str(dataType)+"AddressNumber"+str(addressNumber)+"Length"+str(lengthData))
     # DB_bytearray = plc.db_read(dbNumber,0,lengthData)
@@ -71,13 +84,31 @@ def readAddress(Address):
 
         print(data)
     return data
+
+def writeData(Address):
+    (dbNumber,dataType,addressNumber,lengthData)=string2Address(Address)
+    # print("dbnumber"+str(dbNumber)+"datatype"+str(dataType)+"AddressNumber"+str(addressNumber)+"Length"+str(lengthData))
+    # DB_bytearray = plc.db_read(dbNumber,0,lengthData)
+    DB_bytearray = plc.db_fill(int(dbNumber),int(lengthData))
+    plc.db_write(dbNumber,0,DB_bytearray)
+
 # print(prod_rate)
 # print(message)
 # string2Address("DB5,DWORD0")
 # plc.connect('192.168.200.250',0,1)
 
-connectConnection()
-readAddress("DB5,DWORD588")
+if __name__=='__main__':
+    connected=connectConnection(address='192.168.200.250',rack=0,slot=1,Port=102)
+
+    if(connected):
+        logger.info("Connected")
+        readData("DB5,DWORD588")
+    else:
+        logger.error("Disconnected")
+
+# while(1):
+#     cmd=input("Enter Address Cmd to read PLC address\n")
+#     readAddress(cmd)
 
 # (db_number,dataType,addressNumber,lengthData)=string2Address("DB5,DWORD0")
 # print("dbnumber"+str(db_number)+"datatype"+str(dataType)+"AddressNumber"+str(addressNumber)+"Length"+str(lengthData))
