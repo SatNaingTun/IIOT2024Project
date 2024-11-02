@@ -87,7 +87,13 @@ def askCommand():
         logger.error("Could not establish connection to the PLC.")
 
 
-string2Address('DB1,X1024.0')
 
-# if __name__ == '__main__':
-#    askCommand()
+def readDataWithTopic(Address,Topic):
+    data=readData(Address)
+    dataDict={}
+    dataDict[Topic]=data
+    print(dataDict)
+
+
+if __name__ == '__main__':
+   askCommand()

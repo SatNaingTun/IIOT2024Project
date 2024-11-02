@@ -84,6 +84,12 @@ def writeData(Address):
     DB_bytearray = plc.db_fill(int(dbNumber),int(lengthData))
     plc.db_write(dbNumber,0,DB_bytearray)
 
+def readDataWithTopic(Address,Topic):
+    data=readData(Address)
+    dataDict={}
+    dataDict[Topic]=data
+    print(dataDict)
+
 # print(prod_rate)
 # print(message)
 # string2Address("DB5,DWORD0")
@@ -131,6 +137,8 @@ def askCommand():
             readData(user_address)
     else:
         logger.error("Disconnected")
+
+# readDataWithTopic('DB5,DWORD0','Input 1')
 
 if __name__=='__main__':
     askCommand()
