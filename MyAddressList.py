@@ -11,7 +11,7 @@ def remove(Topic):
 def get(Topic):
    return __addressList.get(Topic)
 
-def getAllAddress()
+def getAllAddress():
     return __addressList.values()
 
 def getAll(Topic):

@@ -7,12 +7,14 @@ from paho.mqtt import client as mqtt_client
 
 
 # broker = 'broker.emqx.io'
-broker='192.168.200.21'
+# broker='192.168.200.21'
 port = 1883
+broker='192.168.0.121'
 topic = "python/mqtt"
 # Generate a Client ID with the publish prefix.
 client_id = f'publish-{random.randint(0, 1000)}'
-username = 'pi'
+# username = 'pi'
+username='thang'
 password = 'raspberry'
 
 def connect_mqtt():

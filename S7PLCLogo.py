@@ -81,7 +81,8 @@ def askCommand():
             user_address = input("Enter the PLC address to read (e.g., DB1,WORD1122) or 'exit' to quit: ")
             if user_address.lower() == 'exit':
                 break
-            readData(user_address)
+            # readData(user_address)
+            readDataWithTopic(user_address,"Input 1")
             # string2Address(user_address)
     else:
         logger.error("Could not establish connection to the PLC.")
@@ -93,6 +94,7 @@ def readDataWithTopic(Address,Topic):
     dataDict={}
     dataDict[Topic]=data
     print(dataDict)
+    return dataDict
 
 
 if __name__ == '__main__':

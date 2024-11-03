@@ -8,11 +8,16 @@ cursor = conn.cursor()
 
 # Create table
 cursor.execute('''CREATE TABLE IF NOT EXISTS tb_address
-             (topicCol text,addressCol  text)''')
+             (topicCol text,addressCol text)''')
 
+# check tables
+cursor.execute('tables')
 # Insert a row of data
-cursor.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
 
+# cursor.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+
+#check table 
+cursor.execute("SELECT * FROM tbl_address")
 # Save (commit) the changes
 conn.commit()
 

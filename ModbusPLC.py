@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 tcp_host = '192.168.200.2'
 tcp_port = 502
 
-coil_address = 10001
+coil_address = 1
 # value_to_write = True
 
 num_to_read = 1
@@ -30,6 +30,14 @@ def read_coil(client, address, quantity):
     else:
         print(f"Failed to read coils from address {address}")
 
+def read_reg(address,reg,quantity):
+    result=client.read_holding_registers(address=address,count=quantity,slave=1)
+
+    if not result.isError():
+        print("Successfully read function code: %s" % result.function_code)
+    else:
+        print(f"Failed to read function code from address {address}")
+
 client = ModbusTcpClient(host=tcp_host, port=tcp_port)
 
 if __name__=='__main__':
@@ -41,7 +49,8 @@ if __name__=='__main__':
                 # write_coil(client, coil_address, value_to_write)
                 # value_to_write = not value_to_write
 
-                read_coil(client, coil_address, num_to_read)
+                # read_coil(client, coil_address, num_to_read)
+                read_reg(address=529,reg=0,quantity=16)
 
                 client.close()
             else:
