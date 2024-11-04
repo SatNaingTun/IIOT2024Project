@@ -17,8 +17,17 @@
 </head>
 <body>
     <!-- <h1>{{ message }}</h1> -->
-    {% block 'body' %}  
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{ message.tags}}" {% endif %}>
+        {{message.tags}} -
+        {{message}}
+        
+    </div>
+    {% endfor %}
+    {% endif %}
 
+    {% block 'body' %}  
     {% endblock %}
 </body>
 {% block 'footer' %} 

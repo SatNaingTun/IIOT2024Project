@@ -7,6 +7,7 @@ from . import views
 # from .views import iiot
 
 urlpatterns = [
-    path("", views.index,name='iiot'),
+    # path("", views.index,name='iiot'),
+    path("", views.test,name='test'),
     path("test/", views.test,name='test'),
     ]
