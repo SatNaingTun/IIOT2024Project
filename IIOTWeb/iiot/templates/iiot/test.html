@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+{% block 'body' %}
+<form action="">
+    <div class="mb-3 mt-3">
+        <label for="IPAddressPLC" class="form-label">IP AddressPLC:</label>
+        <input type="text" class="form-control" id="IPAddressPLC" placeholder="IPAddressPLC" name="IPAddressPLC">
+      </div>
+    <div class="mb-3 mt-3">
+      <label for="AddressMemory" class="form-label">Address Memory:</label>
+      <input type="text" class="form-control" id="AddressMemory" placeholder="AddressMemory" name="AddressMemory">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% endblock %}

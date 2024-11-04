@@ -8,4 +8,5 @@ from . import views
 
 urlpatterns = [
     path("", views.index,name='iiot'),
-]
+    path("test/", views.test,name='test'),
+    ]
