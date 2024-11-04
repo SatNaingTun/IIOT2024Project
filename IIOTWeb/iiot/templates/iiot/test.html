@@ -1,16 +1,58 @@
 {% extends 'base/base.html' %}
 {% block 'body' %}
-<form action="" method="post">
+<form method="post">
     {% csrf_token %}
     <div class="mb-3 mt-3">
-        <label for="IPAddressPLC" class="form-label">IP AddressPLC:</label>
         <input type="text" class="form-control" id="IPAddressPLC" placeholder="IP Address of PLC" name="IPAddressPLC">
+        <span class="input-group-text"> </span>
+        <label for="PlcProtocol" class="form-label">PLC Protocol:</label>
+        
+      <select class="form-select" id="PlcProtocol" name="PlcProtocol">
+        
+        <option>S7Rack</option>
+        <option>S7Tsap</option>
+        <option>Modbus</option>
+        <input type="text" class="form-control" placeholder="Port" name="PlcPort" id="PlcPort">
+        
       </div>
-    <div class="mb-3 mt-3">
-      <label for="AddressMemory" class="form-label">Address Memory:</label>
-      <input type="text" class="form-control" id="AddressMemory" placeholder="Address Memory" name="AddressMemory">
+      
+      
+      
+      <div class="mb-3 mt-3">
+        <label for="variable_name" class="form-label">Input Variable name</label>
+        <input type="text" class="form-control" id="variable_name" placeholder="Variable Name of PLC" name="variable_name"/>
+      </div>
+      <div class="mb-3 mt-3">
+        <label for="AddressMemory" class="form-label">Address Memory:</label>
+        <input type="text" class="form-control" id="AddressMemory" placeholder="Address Memory" name="AddressMemory"/>
     </div>
-    
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+    <div class="d-grid gap-2 d-md-block">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form> 
+  {% if plc_data %}
+        <table border="1" class="text-center table">
+          <thead>
+            <tr>
+                <th scope="col">Variable Name</th>  
+                <th scope="col">Address</th>        
+                <th scope="col">Data</th>           
+            </tr>
+          </thead>
+            {% for entry in plc_data %}
+                <tr>
+                    <td>{{ entry.variable_name }}</td>  
+                    <td>{{ entry.address }}</td>        
+                    <td>{{ entry.data }}</td>            
+                </tr>
+            {% endfor %}
+        </table>
+        <!-- <h2>JSON Output</h2>
+        <pre>{{ json_data|safe }}</pre>  
+        {% else %}
+        <p>No data read yet.</p> -->
+   
+        
+  {% endif %}
+
 {% endblock %}
