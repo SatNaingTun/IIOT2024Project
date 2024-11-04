@@ -1,3 +1,5 @@
 from django.db import models
 
-# Create your models here.
+class S7InputAddress(models.Model):
+    topic=models.CharField(max_length=200)
+    address=models.CharField(max_length=200)

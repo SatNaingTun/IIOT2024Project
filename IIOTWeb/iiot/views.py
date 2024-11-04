@@ -9,6 +9,7 @@ def test(request):
     if request.method=='GET':
         return render(request,"iiot/test.html")
     elif request.method=='POST':
+        
         messages.info(request,'You clicked the submit button')
         return redirect(test)
 
