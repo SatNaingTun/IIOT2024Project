@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block 'body' %}
+<div class="album py-5 bg-light">
+    <dev class="container">
+        <div class="row row-col-1 row-col-sm-2 row-col-md g-3">
+            {% for dev in inputDevices %}
+            <div class="col">
+                {% include "components/listing_card.html" %}
+            </div>
+            <p>{{listing.id}}</p>
+            {% endfor %}
+        </div>
+    </dev>
+
+</div>
+{% endblock %}

@@ -4,12 +4,18 @@ from django.contrib import messages
 # from .Controllers import PlcAllInOne
 from .PlcProtocols import PlcProtocol
 from .Controllers import S7PLCLogo
-from .forms import PLCAddressForm
+from .models import InputDevice
+from .forms import InputDeviceForm
 # Create your views here.
-# plc_data = []
+plc_data = []
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+def listInputDevices(request):
+    inputDevices=InputDevice.objects.all()
+    context={
+         'inputDevices':inputDevices
+     }
+    # return HttpResponse("Hello, world. You're at the polls index.")
+    return render(request,"iiot/listInputDevices.html",context)
 
 def test(request):
     plc_data=[]
@@ -68,9 +74,22 @@ def mqtt_view(request):
      elif request.method=='GET':
           return render(request,'iiot/mqtt.html')
          
-def list_view(request):
+def registerInputDevice(request):
+   
+          
      if request.method=='POST':
-          pass
+        try:
+          inputDeviceForm=InputDeviceForm(request.POST)
+          if inputDeviceForm.is_valid():
+              inputDevice=inputDeviceForm.save()
+              messages.info(request,f'{inputDevice.device_name} saved Successfully')
+        except Exception as e:
+            print(e)
+            messages.error(request,'An error occurred while saving InputDevice')
+        return redirect(registerInputDevice)
+
      elif request.method=='GET':
-          return render(request,'iiot/list.html')
+          inputDeviceForm=InputDeviceForm()
+          return render(request,'iiot/registerInputDevice.html',{"inputDeviceForm":inputDeviceForm})
+
 

@@ -1,0 +1,1 @@
+plc_protocols=(("S7Rack","S7Rack"),("S7Tsap","S7Tsap"),("Modbus","Modbus"))

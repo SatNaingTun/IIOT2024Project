@@ -21,13 +21,13 @@
             <tr>
                 <th>Variable Name</th>  <!-- First column for variable name -->
                 <th>Address</th>        <!-- Second column for address -->
-                <th>Data</th           <!-- Third column for data -->
+                <th>Data</th>          <!-- Third column for data -->
             </tr>
             {% for entry in plc_data %}
                 <tr>
                     <td>{{ entry.variable_name }}</td>  <!-- Display variable name -->
                     <td>{{ entry.address }}</td>        <!-- Display address -->
-                    <td>{{ entry.data }}</td            <!-- Display data -->
+                    <td>{{ entry.data }}</td>            <!-- Display data -->
                 </tr>
             {% endfor %}
         </table>

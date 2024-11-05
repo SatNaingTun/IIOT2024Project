@@ -1,5 +1,9 @@
 from django import forms
+from .models import InputDevice
 
-class PLCAddressForm(forms.Form):
-    variable_name = forms.CharField(label='Variable Name', max_length=24)
-    address=forms.CharField(label='PLC Address', max_length=24)
+class InputDeviceForm(forms.ModelForm):
+    
+    class Meta:
+         model=InputDevice
+         fields={'device_name','ip_address','port','device_protocol'}
+

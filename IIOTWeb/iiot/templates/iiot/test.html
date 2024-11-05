@@ -3,16 +3,19 @@
 <form method="post">
     {% csrf_token %}
     <div class="mb-3 mt-3">
-        <input type="text" class="form-control" id="IPAddressPLC" placeholder="IP Address of PLC" name="IPAddressPLC">
+        <input type="text" class="form-control" id="IPAddressPLC" placeholder="IP Address of PLC" name="IPAddressPLC" value="192.168.200.2">
         <span class="input-group-text"> </span>
-        <label for="PlcProtocol" class="form-label">PLC Protocol:</label>
+        
         
       <select class="form-select" id="PlcProtocol" name="PlcProtocol">
         
         <option>S7Rack</option>
         <option>S7Tsap</option>
         <option>Modbus</option>
-        <input type="text" class="form-control" placeholder="Port" name="PlcPort" id="PlcPort">
+        </select>
+        <input type="number" class="form-control" placeholder="Port" name="PlcPort" id="PlcPort">
+        <input type="number" class="form-control" placeholder="Rack" name="Rack" id="Rack">
+        <input type="number" class="form-control" placeholder="Slot" name="Slot" id="Slot">
         
       </div>
       
