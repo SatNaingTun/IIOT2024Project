@@ -89,6 +89,7 @@ def readDataWithTopic(Address,Topic):
     dataDict={}
     dataDict[Topic]=data
     print(dataDict)
+    return dataDict
 
 # print(prod_rate)
 # print(message)

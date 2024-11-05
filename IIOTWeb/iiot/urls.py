@@ -9,6 +9,7 @@ from . import views
 urlpatterns = [
     # path("", views.index,name='iiot'),
     path("", views.test,name='test'),
-    path("test/", views.test,name='test'),
+    path("testLocal/", views.testLocal,name='testLocal'),
     path("list/", views.list_view,name='list'),
+    path("mqtt/", views.mqtt_view,name='Mqtt'),
     ]

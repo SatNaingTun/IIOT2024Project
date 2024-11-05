@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+{% block 'body' %}
+<form method="post">
+    {% csrf_token %}
+<div class="mb-3 mt-3">
+    <input type="text" class="form-control" id="MqttServerIP" placeholder="IP Address of Mqtt Server" name="MqttServerIP">
+    <input type="number" class="form-control" id="MqttPort" placeholder="Port Address of Mqtt Server" name="MqttPort">
+</div>
+<div class="d-grid gap-2 d-md-block">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+{% endblock %}

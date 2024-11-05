@@ -19,7 +19,8 @@
     <!-- <h1>{{ message }}</h1> -->
     {% if messages %}
     {% for message in messages %}
-    <div {% if message.tags %} class="alert alert-{{ message.tags}}" {% endif %}>
+    <div {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %}>
+        <!-- <div  class="alert alert-error"></div> -->
         {{message.tags}} -
         {{message}}
         
