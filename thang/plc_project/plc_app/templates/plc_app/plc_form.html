@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC Data Collector</title>
+</head>
+<body>
+    <h1>PLC Data Collector</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="action" value="read">Read Data</button>
+    </form>
+
+    <h2>Read Data</h2>
+    {% if plc_data %}
+        <form method="post">
+            {% csrf_token %}
+            <table border="1">
+                <tr>
+                    <th>Select</th>
+                    <th>Variable Name</th>
+                    <th>Address</th>
+                    <th>Data</th>
+                </tr>
+                {% for entry in plc_data %}
+                    <tr>
+                        <td><input type="checkbox" name="selected_entries" value="{{ entry.address }}"></td>
+                        <td>{{ entry.variable_name }}</td>
+                        <td>{{ entry.address }}</td>
+                        <td>{{ entry.data }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <button type="submit" name="delete">Delete Selected</button>
+        </form>
+
+        <h2>JSON Output</h2>
+        <pre>{{ json_data|safe }}</pre>
+    {% else %}
+        <p>No data read yet.</p>
+    {% endif %}
+
+    <h2>InfluxDB Data</h2>
+    {% if influx_data %}
+        <table border="1">
+            <tr>
+                <th>Variable Name</th>
+                <th>Address</th>
+                <th>Value</th>
+                <th>Timestamp</th>
+            </tr>
+            {% for entry in influx_data %}
+                <tr>
+                    <td>{{ entry.variable_name }}</td>
+                    <td>{{ entry.address }}</td>
+                    <td>{{ entry.value }}</td>
+                    <td>{{ entry.time }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No data found in InfluxDB.</p>
+    {% endif %}
+    
+    <h2>Create New InfluxDB Database</h2>
+    <a href="{% url 'create_database_view' %}">Create Database</a>
+</body>
+</html>

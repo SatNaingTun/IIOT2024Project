@@ -27,9 +27,13 @@ def test(request):
         # print(var_name)
         AddressMemory = request.POST.get('AddressMemory')
         # print(AddressMemory)
+        ip=request.POST.get('IPAddressPLC')
+        port=request.POST.get('PlcPort')
         protocol_name=request.POST.get('PlcProtocol')
-        # print(protocol_name)
-        result=PlcProtocol.getData(protocol_name,AddressMemory)
+        rack=request.POST.get('Rack')
+        slot=request.POST.get('Slot')
+        print(protocol_name)
+        result=PlcProtocol.getData(protocol_name,AddressMemory,ip,int(port),rack,slot)
         
         if result is not None:
             plc_data.append({'address': AddressMemory, 'data': result, 'variable_name': var_name})

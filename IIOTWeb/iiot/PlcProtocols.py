@@ -8,12 +8,14 @@ class PlcProtocol:
         try:
             if (protocol_name is not None):
                 if protocol_name=='S7Rack':
-                    if S7PLC.connectConnection(IPAddress,RackOrTsap,SlotOrTsapLogo,Port)==True:
+                    if S7PLC.connectConnection(IPAddress,int(RackOrTsap),int(SlotOrTsapLogo),Port)==True:
                         return S7PLC.readData(Address)
                     else:
                         return None
                 elif protocol_name=='S7Tsap':
-                    if S7PLCLogo.connectConnection(IPAddress,RackOrTsap,SlotOrTsapLogo,Port)==True:
+                    changedTsap=int(RackOrTsap, 16)
+                    changedTsapLogo=int(SlotOrTsapLogo, 16)
+                    if S7PLCLogo.connectConnection(IPAddress,changedTsap,changedTsapLogo,Port)==True:
                         return S7PLCLogo.readData(Address)
                     else:
                         return None
