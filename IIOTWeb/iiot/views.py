@@ -6,22 +6,35 @@ from .PlcProtocols import PlcProtocol
 from .Controllers import S7PLCLogo
 
 from .forms import InputDeviceForm
-from .forms import InputAddressForm
+# from .forms import InputAddressForm
 from .forms import MqttServerForm
-from .models import MqttServer
-from .models import InputDevice
-from .models import InputAddress
+from .models import MqttServers
+# from .models import InputDevice
+# from .models import InputAddress
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib import messages
+from .forms import InputAddressForm
+from .models import InputDevices, InputAddresses
 
 # Create your views here.
 plc_data = []
 
 def listInputDevices(request):
-    inputDevices=InputDevice.objects.all()
+    inputDevices=InputDevices.objects.all()
     context={
          'inputDevices':inputDevices
      }
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request,"iiot/listInputDevices.html",context)
+
+def listInputAddresses(request):
+    inputAddresses=InputAddresses.objects.all()
+    context={
+         'inputAddresses':inputAddresses
+     }
+    # return HttpResponse("Hello, world. You're at the polls index.")
+    return render(request,"iiot/listInputAddresses.html",context)
+
 
 def test(request):
     plc_data=[]
@@ -126,7 +139,7 @@ def registerMqtt(request):
       
 def editInputDevice(request,device_id):
     try:
-        inputDevice=InputDevice.objects.get(device_id=device_id)
+        inputDevice=InputDevices.objects.get(device_id=device_id)
         if inputDevice is None:
             raise Exception
         if request.method=="POST":
@@ -165,14 +178,11 @@ def editInputDevice(request,device_id):
 #         messages.error(request,'An error occurred while editing Input Address')
 #     return redirect(listInputDevices)
 
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib import messages
-from .forms import InputAddressForm
-from .models import InputDevice, InputAddress
+
 
 def addInputAddress(request, device_id):
     # Attempt to fetch the input device; return 404 if not found
-    inputDevice = get_object_or_404(InputDevice, device_id=device_id)
+    inputDevice = get_object_or_404(InputDevices, device_id=device_id)
     
     if request.method == 'POST':
         inputAddressForm = InputAddressForm(request.POST)

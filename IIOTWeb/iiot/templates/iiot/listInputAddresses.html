@@ -2,17 +2,19 @@
 {% load crispy_forms_tags %}
 
 {% block 'body' %}
-<div class="album py-5 bg-light"> 
-    <h1>List of Input Devices</h1>
+<div class="album py-5 bg-light">
+    <h1>List of Input addresses</h1> 
     <div class="container"> 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
-            {% for dev in inputDevices %} 
-            <div class="col"> 
-                {% include "components/listing_InputDevices.html" %} 
+            {% for adr in inputAddresses %} 
+            <div class="col">
+                i 
+                {% include "components/listing_InputAddresses.html" %} 
                 <!-- <p>{{dev.id}}</p>  -->
             </div> 
             {% endfor %} 
         </div> 
     </div> 
 </div>
+
 {% endblock %}
