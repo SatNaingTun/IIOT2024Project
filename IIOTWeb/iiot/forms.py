@@ -5,7 +5,7 @@ class InputDeviceForm(forms.ModelForm):
     
     class Meta:
          model=InputDevices
-         fields={'device_name','ip_address','port','device_protocol'}
+         fields={'device_name','ip_address','port','device_protocol','rack','slot'}
 
 
 class InputAddressForm(forms.ModelForm):

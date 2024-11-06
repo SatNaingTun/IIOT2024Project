@@ -7,6 +7,8 @@ class InputDevices(models.Model):
     device_name=models.CharField(max_length=24)
     ip_address=models.GenericIPAddressField(max_length=24)
     port=models.IntegerField()
+    rack=models.IntegerField(default=1)
+    slot=models.IntegerField(default=1)
     device_protocol=models.CharField(max_length=10,choices=plc_protocols,default="S7Tsap")
 
     def __str__(self):

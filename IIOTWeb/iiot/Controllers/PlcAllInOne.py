@@ -3,9 +3,29 @@ import S7PLCLogo
 import ModbusPLC
 
 class PlcProtocol:
-    def getData(protocol_name):
-        if (protocol_name is not None):
-            print(protocol_name)
+    def getData(protocol_name,Address,IPAddress,Port,RackOrTsap,SlotOrTsapLogo):
+        try:
+            if (protocol_name is not None):
+                if protocol_name=='S7Rack':
+                    if S7PLC.connectConnection(IPAddress,int(RackOrTsap),int(SlotOrTsapLogo),Port)==True:
+                        return S7PLC.readData(Address)
+                    else:
+                        return None
+                elif protocol_name=='S7Tsap':
+                    changedTsap=int(RackOrTsap, 16)
+                    changedTsapLogo=int(SlotOrTsapLogo, 16)
+                    if S7PLCLogo.connectConnection(IPAddress,changedTsap,changedTsapLogo,Port)==True:
+                        return S7PLCLogo.readData(Address)
+                    else:
+                        return None
+                elif protocol_name=='Modbus':
+                    if ModbusPLC.connectConnection()==True:
+                        return ModbusPLC.read_reg(Address)
+                    else:
+                        return None
+        except Exception as e:
+            print(e)
+            return None
 
 
 if __name__=='__main__':

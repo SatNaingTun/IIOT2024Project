@@ -211,3 +211,24 @@ def addInputAddress(request, device_id):
         'inputAddressForm': inputAddressForm,
         'inputDevice': inputDevice
     })
+
+
+def editInputAddress(request, address_id):
+    # Attempt to fetch the input device; return 404 if not found
+    try:
+        inputAddress = get_object_or_404(InputAddresses, address_id=address_id)
+    
+        if request.method == 'POST':
+            inputAddressForm = InputAddressForm(request.POST,instance=inputAddress)
+        
+            if inputAddressForm.is_valid():
+                inputAddress=inputAddressForm.save()
+                messages.info(request,f'{inputAddress.address_id} updated Successfully')
+                return redirect(listInputAddresses)
+            else:
+                inputAddressForm = InputAddressForm(instance=inputAddress)
+                return render(request,'iiot/editInputDevice.html',{"inputDeviceForm":inputAddressForm})
+    except Exception as e:
+        messages.error(request,'An error occurred while editing InputDevice')
+    return redirect(listInputDevices)
+
