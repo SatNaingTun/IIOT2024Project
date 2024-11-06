@@ -6,6 +6,9 @@ from .PlcProtocols import PlcProtocol
 from .Controllers import S7PLCLogo
 from .models import InputDevice
 from .forms import InputDeviceForm
+from .forms import MqttServerForm
+from .models import MqttServer
+
 # Create your views here.
 plc_data = []
 
@@ -95,6 +98,27 @@ def registerInputDevice(request):
      elif request.method=='GET':
           inputDeviceForm=InputDeviceForm()
           return render(request,'iiot/registerInputDevice.html',{"inputDeviceForm":inputDeviceForm})
+     
+            
+def registerMqtt(request):
+   
+          
+     if request.method=='POST':
+        try:
+          mqttServerForm=MqttServerForm(request.POST)
+          if mqttServerForm.is_valid():
+              mqttServer=mqttServerForm.save()
+              messages.info(request,f'{mqttServer.device_name} saved Successfully')
+        except Exception as e:
+            print(e)
+            messages.error(request,'An error occurred while saving InputDevice')
+        return redirect(registerMqtt)
+
+     elif request.method=='GET':
+          mqttServerForm=MqttServerForm()
+          return render(request,'iiot/registerMqtt.html',{"mqttServerForm":mqttServerForm})
+
+      
 
       
 def editInputDevice(request,id):

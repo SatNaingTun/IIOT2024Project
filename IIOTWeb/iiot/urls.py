@@ -13,6 +13,6 @@ urlpatterns = [
     path("reg/inputs/", views.registerInputDevice,name='RegisterInput'),
     path("mqtt/", views.mqtt_view,name='Mqtt'),
     path("list/inputs/", views.listInputDevices,name='ListInput'),
-    path("reg/mqtt/", views.listInputDevices,name='RegMqtt'),
+    path("reg/mqtt/", views.registerMqtt,name='RegMqtt'),
     path("edit/inputs/<str:id>/", views.editInputDevice,name='EditInput'),
     ]
