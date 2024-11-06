@@ -7,7 +7,8 @@
             <li>{{dev.device_protocol}}</li> 
         </ul> 
         <div class="d-flex justify-content-end"> 
-            <a href="{% url 'EditInput' dev.input_device_id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a> 
+            <a href="{% url 'EditInput' id=dev.input_device_id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a> 
+            <a href="{% url 'AddInputAddress' id=dev.input_device_id %}" type="button" class="btn btn-sm btn-outline-secondary">Add address</a> 
         </div> 
     </div> 
 </div>

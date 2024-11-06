@@ -4,10 +4,13 @@ from django.contrib import messages
 # from .Controllers import PlcAllInOne
 from .PlcProtocols import PlcProtocol
 from .Controllers import S7PLCLogo
-from .models import InputDevice
+
 from .forms import InputDeviceForm
+from .forms import InputAddressForm
 from .forms import MqttServerForm
 from .models import MqttServer
+from .models import InputDevice
+from .models import InputAddress
 
 # Create your views here.
 plc_data = []
@@ -124,13 +127,37 @@ def registerMqtt(request):
 def editInputDevice(request,id):
     try:
         inputDevice=InputDevice.objects.get(input_device_id=id)
-        # if inputDevice is None:
-        #     raise Exception
+        if inputDevice is None:
+            raise Exception
         if request.method=="POST":
-            pass
+            inputDeviceForm=InputDeviceForm(request.POST,instance=inputDevice)
+            if inputDeviceForm.is_valid:
+                inputDevice=inputDeviceForm.save()
+                messages.info(request,f'{inputDevice.device_name} updated Successfully')
+            return redirect(listInputDevices)
         else:
-            print(id)
-        return render(request,'iiot/editInputDevice.html',{})
+            inputDeviceForm=InputDeviceForm(instance=inputDevice)
+            return render(request,'iiot/editInputDevice.html',{"inputDeviceForm":inputDeviceForm})
     except Exception as e:
         messages.error(request,'An error occurred while editing InputDevice')
-    redirect(listInputDevices)
+    return redirect(listInputDevices)
+
+
+def addInputAddress(request,device_id):
+    try:
+        inputDevice=InputDevice.objects.get(input_device_id=device_id)
+        # inputDevice=InputAddress.objects.get(device_id=device_id)
+        if inputDevice is None:
+            raise Exception
+        if request.method=="POST":
+            inputDeviceForm=InputAddressForm(request.POST,instance=inputDevice)
+            if inputDeviceForm.is_valid:
+                inputAddress=InputAddressForm.save()
+                messages.info(request,f'{inputAddress.variable_name} updated Successfully')
+            return redirect(listInputDevices)
+        else:
+            inputAddresForm=InputAddressForm()
+            return render(request,'iiot/editInputAddress.html',{"inputAddresForm":inputAddresForm})
+    except Exception as e:
+        messages.error(request,'An error occurred while editing InputDevice')
+    return redirect(listInputDevices)

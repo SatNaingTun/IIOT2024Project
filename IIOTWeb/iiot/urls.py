@@ -15,4 +15,5 @@ urlpatterns = [
     path("list/inputs/", views.listInputDevices,name='ListInput'),
     path("reg/mqtt/", views.registerMqtt,name='RegMqtt'),
     path("edit/inputs/<str:id>/", views.editInputDevice,name='EditInput'),
+    path("reg/inputs/<str:device_id>/address/", views.addInputAddress,name='AddInputAddress'),
     ]
