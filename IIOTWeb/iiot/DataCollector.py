@@ -32,7 +32,8 @@ def getCollect():
             dataDict[adr.variable_name]=result
             
     for mqttServer in mqttServers :
-        MyMqtt.connect_mqtt(mqttServer.ip_address)       
+        client=MyMqtt.connect_mqtt(mqttServer.ip_address,mqttServer.port,mqttServer.mqtt_user_name,mqttServer.mqtt_password)
+        client.publish("iiot/data", str(dataDict))       
     # print(dataDict)
     return dataDict
 
@@ -64,7 +65,7 @@ def getCollectByInputDevice(device_id):
 
 def getCollectBySchedule(myTime):
     dataDict = RepeatedTimer.RepeatedTimer(myTime, getCollect)
-    print(dataDict)
+    # print(dataDict)
     # RepeatedTimer.RepeatedTimer(10, print, 'Hello world')
 
 
