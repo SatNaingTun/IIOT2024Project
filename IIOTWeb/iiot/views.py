@@ -227,8 +227,8 @@ def editInputAddress(request, address_id):
                 return redirect(listInputAddresses)
             else:
                 inputAddressForm = InputAddressForm(instance=inputAddress)
-                return render(request,'iiot/editInputDevice.html',{"inputDeviceForm":inputAddressForm})
+                return render(request,'iiot/editInputAddress.html',{"inputAddressForm":inputAddressForm})
     except Exception as e:
         messages.error(request,'An error occurred while editing InputDevice')
-    return redirect(listInputDevices)
+        return redirect(listInputAddresses)
 
