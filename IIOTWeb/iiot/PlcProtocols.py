@@ -4,7 +4,7 @@ from .Controllers import S7PLCLogo
 from .Controllers import ModbusPLC
 
 class PlcProtocol:
-    def getData(protocol_name,Address,IPAddress,Port,RackOrTsap,SlotOrTsapLogo):
+    def getData(protocol_name:str,Address:str,IPAddress:str,Port:int,RackOrTsap:int,SlotOrTsapLogo:int):
         try:
             if (protocol_name is not None):
                 if protocol_name=='S7Rack':
@@ -13,8 +13,16 @@ class PlcProtocol:
                     else:
                         return None
                 elif protocol_name=='S7Tsap':
-                    changedTsap=int(RackOrTsap, 16)
-                    changedTsapLogo=int(SlotOrTsapLogo, 16)
+                    if RackOrTsap is not None:
+                        changedTsap = int(RackOrTsap, 16)
+                    else:
+                        changedTsap = 1  # or a suitable default value
+
+                    if SlotOrTsapLogo is not None:
+                        changedTsapLogo = int(SlotOrTsapLogo, 16)
+                    else:
+                        changedTsapLogo = 1  # or a suitable default value
+
                     if S7PLCLogo.connectConnection(IPAddress,changedTsap,changedTsapLogo,Port)==True:
                         return S7PLCLogo.readData(Address)
                     else:
