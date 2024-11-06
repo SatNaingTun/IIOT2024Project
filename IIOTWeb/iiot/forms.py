@@ -12,7 +12,7 @@ class InputAddressForm(forms.ModelForm):
     
     class Meta:
          model=InputAddress
-         fields={'variable_name','address','device_id'}
+         fields={'variable_name','address','device'}
 
 class MqttServerForm(forms.ModelForm):
     

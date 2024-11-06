@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import get_object_or_404, render,redirect
 from django.http import HttpResponse
 from django.contrib import messages
 # from .Controllers import PlcAllInOne
@@ -126,7 +126,7 @@ def registerMqtt(request):
       
 def editInputDevice(request,device_id):
     try:
-        inputDevice=InputDevice.objects.get(input_device_id=device_id)
+        inputDevice=InputDevice.objects.get(device_id=device_id)
         if inputDevice is None:
             raise Exception
         if request.method=="POST":
@@ -143,24 +143,61 @@ def editInputDevice(request,device_id):
     return redirect(listInputDevices)
 
 
-def addInputAddress(request,device_id):
-    try:
-        inputDevice=InputDevice.objects.get(input_device_id=device_id)
-        # inputDevice=InputAddress.objects.get(device_id=device_id)
-        if inputDevice is None:
-            raise Exception
-        if request.method=="POST":
-            inputDeviceForm=InputAddressForm(request.POST,instance=inputDevice)
-            if inputDeviceForm.is_valid:
-                # inputAddress=InputAddressForm.save(commit=False)
-                # inputAddress.device_id=InputDevice.objects.get(input_device_id=device_id)
-                # inputAddress.save()
-                inputAddress=InputAddressForm.save()
-                messages.info(request,f'{inputAddress.variable_name} updated Successfully')
-            return redirect(listInputDevices)
+# def addInputAddress(request,device_id):
+#     try:
+#         # inputDevice=get_object_or_404(InputDevice, device=device_id)
+#         inputDevice=InputDevice.objects.get(device_id=device_id)
+#         if inputDevice is None:
+#             raise Exception
+#         if request.method=="POST":
+#             inputAddressForm=InputAddressForm(request.POST,instance=inputDevice)
+#             if inputAddressForm.is_valid():
+#                 inputAddress=InputAddressForm.save(commit=False)
+#                 inputAddress.device=inputDevice
+#                 inputAddress.save()
+                
+#                 # messages.info(request,f'{inputAddress.variable_name} updated Successfully')
+#             return redirect(listInputDevices)
+#         else:
+#             inputAddressForm=InputAddressForm()
+#             return render(request,'iiot/editInputAddress.html',{"inputAddressForm":inputAddressForm})
+#     except Exception as e:
+#         messages.error(request,'An error occurred while editing Input Address')
+#     return redirect(listInputDevices)
+
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib import messages
+from .forms import InputAddressForm
+from .models import InputDevice, InputAddress
+
+def addInputAddress(request, device_id):
+    # Attempt to fetch the input device; return 404 if not found
+    inputDevice = get_object_or_404(InputDevice, device_id=device_id)
+    
+    if request.method == 'POST':
+        inputAddressForm = InputAddressForm(request.POST)
+        
+        if inputAddressForm.is_valid():
+            # Create a new InputAddress instance, but don't save it to the database yet
+            inputAddress = inputAddressForm.save(commit=False)
+            # Assign the device to the InputAddress instance
+            inputAddress.device = inputDevice
+            # Save the InputAddress to the database
+            inputAddress.save()
+            
+            # Show success message and redirect
+            messages.success(request, f'{inputAddress.variable_name} added successfully to {inputDevice.device_name}.')
+            return redirect('ListInput')  # Adjust this to the correct view name or path for listing devices
+        
         else:
-            inputAddressForm=InputAddressForm()
-            return render(request,'iiot/editInputAddress.html',{"inputAddressForm":inputAddressForm})
-    except Exception as e:
-        messages.error(request,'An error occurred while editing Input Address')
-    return redirect(listInputDevices)
+            # If the form is invalid, show an error message
+            messages.error(request, 'Failed to save Input Address. Please check the form data.')
+    else:
+        # If GET request, initialize an empty form
+        inputAddressForm = InputAddressForm()
+
+    # Render the form with context
+    return render(request, 'iiot/editInputAddress.html', {
+        'inputAddressForm': inputAddressForm,
+        'inputDevice': inputDevice
+    })
