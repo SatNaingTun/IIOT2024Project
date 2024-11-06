@@ -19,13 +19,15 @@ from .models import InputDevices, InputAddresses
 # Create your views here.
 plc_data = []
 
-def listInputDevices(request):
+def listDevices(request):
     inputDevices=InputDevices.objects.all()
+    mqttServers=MqttServers.objects.all()
     context={
-         'inputDevices':inputDevices
+         'inputDevices':inputDevices,
+         'mqttServers':mqttServers
      }
     # return HttpResponse("Hello, world. You're at the polls index.")
-    return render(request,"iiot/listInputDevices.html",context)
+    return render(request,"iiot/listDevices.html",context)
 
 def listInputAddresses(request):
     inputAddresses=InputAddresses.objects.all()
@@ -147,13 +149,33 @@ def editInputDevice(request,device_id):
             if inputDeviceForm.is_valid:
                 inputDevice=inputDeviceForm.save()
                 messages.info(request,f'{inputDevice.device_name} updated Successfully')
-            return redirect(listInputDevices)
+            return redirect(listDevices)
         else:
             inputDeviceForm=InputDeviceForm(instance=inputDevice)
             return render(request,'iiot/editInputDevice.html',{"inputDeviceForm":inputDeviceForm})
     except Exception as e:
         messages.error(request,'An error occurred while editing InputDevice')
-    return redirect(listInputDevices)
+    return redirect(listDevices)
+
+      
+def editMqtt(request,id):
+    try:
+        mqttServer=MqttServers.objects.get(id=id)
+        if mqttServer is None:
+            raise Exception
+        if request.method=="POST":
+            mqttServerForm=MqttServerForm(request.POST,instance=mqttServer)
+            if mqttServerForm.is_valid():
+                mqttServerForm=mqttServerForm.save()
+                messages.info(request,f'{mqttServerForm.device_name} updated Successfully')
+            return redirect(listDevices)
+        else:
+            mqttServerForm=MqttServerForm(instance=mqttServer)
+            return render(request,'iiot/registerMqtt.html',{"mqttServerForm":mqttServerForm})
+    except Exception as e:
+        messages.error(request,'An error occurred while editing Mqtt Server')
+    return redirect(listDevices)
+
 
 
 # def addInputAddress(request,device_id):
@@ -170,13 +192,13 @@ def editInputDevice(request,device_id):
 #                 inputAddress.save()
                 
 #                 # messages.info(request,f'{inputAddress.variable_name} updated Successfully')
-#             return redirect(listInputDevices)
+#             return redirect(listDevices)
 #         else:
 #             inputAddressForm=InputAddressForm()
 #             return render(request,'iiot/editInputAddress.html',{"inputAddressForm":inputAddressForm})
 #     except Exception as e:
 #         messages.error(request,'An error occurred while editing Input Address')
-#     return redirect(listInputDevices)
+#     return redirect(listDevices)
 
 
 
@@ -225,9 +247,10 @@ def editInputAddress(request, address_id):
                 inputAddress=inputAddressForm.save()
                 messages.info(request,f'{inputAddress.address_id} updated Successfully')
                 return redirect(listInputAddresses)
-            else:
-                inputAddressForm = InputAddressForm(instance=inputAddress)
-                return render(request,'iiot/editInputAddress.html',{"inputAddressForm":inputAddressForm})
+        else:
+            inputAddressForm = InputAddressForm(instance=inputAddress)
+            return render(request,'iiot/editInputAddress.html',{"inputAddressForm":inputAddressForm})
+        
     except Exception as e:
         messages.error(request,'An error occurred while editing InputDevice')
         return redirect(listInputAddresses)
