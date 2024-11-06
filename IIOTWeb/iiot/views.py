@@ -124,9 +124,9 @@ def registerMqtt(request):
       
 
       
-def editInputDevice(request,id):
+def editInputDevice(request,device_id):
     try:
-        inputDevice=InputDevice.objects.get(input_device_id=id)
+        inputDevice=InputDevice.objects.get(input_device_id=device_id)
         if inputDevice is None:
             raise Exception
         if request.method=="POST":
@@ -152,12 +152,15 @@ def addInputAddress(request,device_id):
         if request.method=="POST":
             inputDeviceForm=InputAddressForm(request.POST,instance=inputDevice)
             if inputDeviceForm.is_valid:
+                # inputAddress=InputAddressForm.save(commit=False)
+                # inputAddress.device_id=InputDevice.objects.get(input_device_id=device_id)
+                # inputAddress.save()
                 inputAddress=InputAddressForm.save()
                 messages.info(request,f'{inputAddress.variable_name} updated Successfully')
             return redirect(listInputDevices)
         else:
-            inputAddresForm=InputAddressForm()
-            return render(request,'iiot/editInputAddress.html',{"inputAddresForm":inputAddresForm})
+            inputAddressForm=InputAddressForm()
+            return render(request,'iiot/editInputAddress.html',{"inputAddressForm":inputAddressForm})
     except Exception as e:
-        messages.error(request,'An error occurred while editing InputDevice')
+        messages.error(request,'An error occurred while editing Input Address')
     return redirect(listInputDevices)
