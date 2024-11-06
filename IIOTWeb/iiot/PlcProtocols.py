@@ -14,12 +14,12 @@ class PlcProtocol:
                         return None
                 elif protocol_name=='S7Tsap':
                     if RackOrTsap is not None:
-                        changedTsap = int(RackOrTsap, 16)
+                        changedTsap = int(str(RackOrTsap), 16)
                     else:
                         changedTsap = 1  # or a suitable default value
 
                     if SlotOrTsapLogo is not None:
-                        changedTsapLogo = int(SlotOrTsapLogo, 16)
+                        changedTsapLogo = int(str(SlotOrTsapLogo), 16)
                     else:
                         changedTsapLogo = 1  # or a suitable default value
 

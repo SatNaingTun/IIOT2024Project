@@ -37,5 +37,5 @@ class MqttServers(models.Model):
     # updated_time=models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.variable_name
+        return self.device_name
 

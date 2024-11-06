@@ -9,8 +9,8 @@ from paho.mqtt import client as mqtt_client
 # broker = 'broker.emqx.io'
 # broker='192.168.200.21'
 port = 1883
-broker='192.168.0.121'
-topic = "python/mqtt"
+broker='192.168.1.102'
+topic = "iiot/data"
 # Generate a Client ID with the publish prefix.
 client_id = f'publish-{random.randint(0, 1000)}'
 # username = 'pi'

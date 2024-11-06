@@ -1,9 +1,42 @@
-from .models import InputDevices, InputAddresses
+from .models import InputDevices, InputAddresses,MqttServers
 from .PlcProtocols import PlcProtocol
 from .PlcProtocols import S7PLCLogo
+from .Controllers import RepeatedTimer, MyMqtt
+
+ 
 # from PlcAllInOne import *
 
 def getCollect():
+    dataDict={}
+    # dataDict[Topic]=data
+    # print(dataDict)
+    inputDevices=InputDevices.objects.all()
+    mqttServers=MqttServers.objects.all()
+    
+    for inputDevice in inputDevices:
+        inputAddresses=InputAddresses.objects.filter(device=inputDevice)
+        for adr in inputAddresses:
+        # adr.address getData(protocol_name,Address,IPAddress,Port,RackOrTsap,SlotOrTsapLogo)
+            # print(inputDevice.device_protocol)
+            # print("",adr.address)
+            # print("",inputDevice.ip_address)
+            # print(inputDevice.port)
+            # print(inputDevice.rack)
+            # print(inputDevice.slot)
+
+            result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,str(inputDevice.ip_address),inputDevice.port,inputDevice.rack,inputDevice.slot)
+            # result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,'192.168.200.2',102,0x0100,0x0100)
+            
+            # print(result)
+            # print(inputDevice.port)
+            dataDict[adr.variable_name]=result
+            
+    for mqttServer in mqttServers :
+        MyMqtt.connect_mqtt(mqttServer.ip_address)       
+    # print(dataDict)
+    return dataDict
+
+def getCollectByInputDevice(device_id):
     dataDict={}
     # dataDict[Topic]=data
     # print(dataDict)
@@ -12,7 +45,13 @@ def getCollect():
         inputAddresses=InputAddresses.objects.filter(device=inputDevice)
         for adr in inputAddresses:
         # adr.address getData(protocol_name,Address,IPAddress,Port,RackOrTsap,SlotOrTsapLogo)
-            print(inputDevice.device_protocol)
+            # print(inputDevice.device_protocol)
+            # print("",adr.address)
+            # print("",inputDevice.ip_address)
+            # print(inputDevice.port)
+            # print(inputDevice.rack)
+            # print(inputDevice.slot)
+
             result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,str(inputDevice.ip_address),inputDevice.port,inputDevice.rack,inputDevice.slot)
             # result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,'192.168.200.2',102,0x0100,0x0100)
             
@@ -22,6 +61,12 @@ def getCollect():
             
     print(dataDict)
     return dataDict
+
+def getCollectBySchedule(myTime):
+    dataDict = RepeatedTimer.RepeatedTimer(myTime, getCollect)
+    print(dataDict)
+    # RepeatedTimer.RepeatedTimer(10, print, 'Hello world')
+
 
 
 
