@@ -10,7 +10,7 @@ urlpatterns = [
     # path("", views.index,name='iiot'),
     path("", views.test,name='test'),
     path("testLocal/", views.testLocal,name='testLocal'),
-    path("regInputDev/", views.registerInputDevice,name='RegisterInput'),
+    path("reg/inputs/", views.registerInputDevice,name='RegisterInput'),
     path("mqtt/", views.mqtt_view,name='Mqtt'),
-    path("listInputDev/", views.listInputDevices,name='ListInput'),
+    path("list/inputs/", views.listInputDevices,name='ListInput'),
     ]
