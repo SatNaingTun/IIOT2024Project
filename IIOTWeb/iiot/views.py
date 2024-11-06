@@ -96,4 +96,17 @@ def registerInputDevice(request):
           inputDeviceForm=InputDeviceForm()
           return render(request,'iiot/registerInputDevice.html',{"inputDeviceForm":inputDeviceForm})
 
-
+      
+def editInputDevice(request,id):
+    try:
+        inputDevice=InputDevice.objects.get(input_device_id=id)
+        # if inputDevice is None:
+        #     raise Exception
+        if request.method=="POST":
+            pass
+        else:
+            print(id)
+        return render(request,'iiot/editInputDevice.html',{})
+    except Exception as e:
+        messages.error(request,'An error occurred while editing InputDevice')
+    redirect(listInputDevices)

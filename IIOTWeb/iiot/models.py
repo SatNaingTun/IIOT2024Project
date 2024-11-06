@@ -24,3 +24,16 @@ class InputAddress(models.Model):
         return self.variable_name
 
 
+class MqttServer(models.Model):
+    id=models.UUIDField(primary_key=True,default=uuid.uuid4)
+    device_name=models.CharField(max_length=24)
+    ip_address=models.GenericIPAddressField(max_length=24)
+    port=models.IntegerField()
+    mqtt_user_name=models.CharField(max_length=24)
+    mqtt_password=models.CharField(max_length=24)
+
+    # updated_time=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.variable_name
+
