@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from .forms import InputAddressForm,InputDeviceForm,MqttServerForm
 from .models import InputDevices, InputAddresses,MqttServers
+from .DataCollector import getCollect
 
 # Create your views here.
 plc_data = []
@@ -254,6 +255,8 @@ def editInputAddress(request, address_id):
 def testRun(request):
      if request.method=='POST':
           timeSchedule = request.POST.get('TimeSchedule')
+          data=getCollect()
+          print(data)
           return render(request,'iiot/testrun.html')
      elif request.method=='GET':
           return render(request,'iiot/testrun.html')

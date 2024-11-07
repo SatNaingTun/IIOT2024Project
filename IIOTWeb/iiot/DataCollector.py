@@ -63,7 +63,7 @@ def getCollectByInputDevice(device_id):
     print(dataDict)
     return dataDict
 
-def getCollectBySchedule(myTime):
+def getCollectBySchedule(myTime,status):
     dataDict = RepeatedTimer.RepeatedTimer(myTime, getCollect)
     # print(dataDict)
     # RepeatedTimer.RepeatedTimer(10, print, 'Hello world')
