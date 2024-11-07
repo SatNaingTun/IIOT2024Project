@@ -69,7 +69,7 @@ if __name__=='__main__':
                 # read_coil(client, coil_address, num_to_read)
                 read_reg(address=530,count=1,slave=1)
 
-                # client.close()
+                client.close()
             else:
                 print(f"Failed to connect to Modbus TCP on {tcp_host}")
                 client.close()
