@@ -245,7 +245,7 @@ def removeInputDevice(request,device_id):
 
 def addInputAddress(request, device_id):
     # Attempt to fetch the input device; return 404 if not found
-    inputDevice = InputDevices.objects.get(InputDevices, device_id=device_id)
+    inputDevice = InputDevices.objects.get(device_id=device_id)
     
     if request.method == 'POST':
         inputAddressForm = InputAddressForm(request.POST)

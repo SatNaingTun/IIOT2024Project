@@ -18,6 +18,7 @@ class InputAddresses(models.Model):
     address_id=models.UUIDField(primary_key=True,default=uuid.uuid4)
     variable_name=models.CharField(max_length=24)
     address=models.CharField(max_length=24)
+    data=models.CharField(max_length=24,default='')
     device=models.ForeignKey(InputDevices,on_delete=models.CASCADE)
 
     # updated_time=models.DateTimeField(auto_now=True)
