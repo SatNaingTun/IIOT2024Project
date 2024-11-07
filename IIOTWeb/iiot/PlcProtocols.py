@@ -28,8 +28,8 @@ class PlcProtocol:
                     else:
                         return None
                 elif protocol_name=='Modbus':
-                    if ModbusPLC.connectConnection()==True:
-                        return ModbusPLC.read_reg(Address)
+                    if ModbusPLC.connectConnection(IPAddress,Port)==True:
+                        return ModbusPLC.read_reg(int(Address))
                     else:
                         return None
         except Exception as e:

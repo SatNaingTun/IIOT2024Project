@@ -17,6 +17,13 @@ coil_address = 1
 
 num_to_read = 1
 
+
+def connectConnection(host='192.168.200.2',port=102):
+    global client
+    client = ModbusTcpClient(host=host,port=port)
+    connected=client.connect()
+    return connected
+
 def write_coil(client, address, value):
     result = client.write_coil(address, value, 1)
 
@@ -53,21 +60,23 @@ def read_reg(address,count=1,slave=1):
         return result.registers
     else:
         logger.error(f"Error reading register from address {address}")
+        return None
 
 # client = ModbusTcpClient(host=tcp_host, port=tcp_port)
 
 if __name__=='__main__':
     try:
         # while True:
-            client = ModbusTcpClient(host='192.168.200.2',port=504)
-            connected=client.connect()
+            # client = ModbusTcpClient(host='192.168.200.2',port=504)
+            # connected=client.connect()
+            connected=connectConnection(host='192.168.200.2',port=504)
             logger.info(connected)
             if connected:
                 # write_coil(client, coil_address, value_to_write)
                 # value_to_write = not value_to_write
 
                 # read_coil(client, coil_address, num_to_read)
-                read_reg(address=530,count=1,slave=1)
+                read_reg(address=531,count=1,slave=1)
 
                 client.close()
             else:
