@@ -16,20 +16,11 @@ def getCollect():
     for inputDevice in inputDevices:
         inputAddresses=InputAddresses.objects.filter(device=inputDevice)
         for adr in inputAddresses:
-        # adr.address getData(protocol_name,Address,IPAddress,Port,RackOrTsap,SlotOrTsapLogo)
-            # print(inputDevice.device_protocol)
-            # print("",adr.address)
-            # print("",inputDevice.ip_address)
-            # print(inputDevice.port)
-            # print(inputDevice.rack)
-            # print(inputDevice.slot)
-
+            dataDict2={}
             result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,str(inputDevice.ip_address),inputDevice.port,inputDevice.rack,inputDevice.slot)
-            # result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,'192.168.200.2',102,0x0100,0x0100)
-            
-            # print(result)
-            # print(inputDevice.port)
-            dataDict[adr.variable_name]=result
+            dataDict2[adr.variable_name]=result
+            adr.save(data=str(result))
+        dataDict[inputDevice]=dataDict2
             
     for mqttServer in mqttServers :
         client=MyMqtt.connect_mqtt(mqttServer.ip_address,mqttServer.port,mqttServer.mqtt_user_name,mqttServer.mqtt_password)
