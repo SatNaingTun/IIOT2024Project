@@ -8,11 +8,12 @@ from . import views
 
 urlpatterns = [
     # path("", views.index,name='iiot'),
-    path("", views.test,name='test'),
+
+    path("test/", views.test,name='test'),
     path("testLocal/", views.testLocal,name='testLocal'),
     path("reg/inputs/", views.registerInputDevice,name='RegisterInput'),
     path("mqtt/", views.mqtt_view,name='Mqtt'),
-    path("list/devices/", views.listDevices,name='ListDevices'),
+    path("", views.listDevices,name='ListDevices'),
     path("reg/mqtt/", views.registerMqtt,name='RegMqtt'),
     path("edit/mqtt/<uuid:id>/", views.editMqtt,name='EditMqtt'),
     path("edit/inputs/<uuid:device_id>/", views.editInputDevice,name='EditInput'),
