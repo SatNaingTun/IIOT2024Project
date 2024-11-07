@@ -5,16 +5,16 @@ from django.contrib import messages
 from .PlcProtocols import PlcProtocol
 from .Controllers import S7PLCLogo
 
-from .forms import InputDeviceForm
+# from .forms import InputDeviceForm
 # from .forms import InputAddressForm
-from .forms import MqttServerForm
-from .models import MqttServers
+# from .forms import MqttServerForm
+# from .models import MqttServers
 # from .models import InputDevice
 # from .models import InputAddress
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import InputAddressForm
-from .models import InputDevices, InputAddresses
+from .forms import InputAddressForm,InputDeviceForm,MqttServerForm
+from .models import InputDevices, InputAddresses,MqttServers
 
 # Create your views here.
 plc_data = []
@@ -92,12 +92,7 @@ def testLocal(request):
         # print(plc_data)
         # print(plc_data.get('variable_name'))
         return render(request,"iiot/test.html",{'plc_data': plc_data})
-       
-def mqtt_view(request):
-     if request.method=='POST':
-          pass
-     elif request.method=='GET':
-          return render(request,'iiot/mqtt.html')
+ 
          
 def registerInputDevice(request):
    
@@ -255,3 +250,10 @@ def editInputAddress(request, address_id):
         messages.error(request,'An error occurred while editing InputDevice')
         return redirect(listInputAddresses)
 
+      
+def testRun(request):
+     if request.method=='POST':
+          timeSchedule = request.POST.get('TimeSchedule')
+          return render(request,'iiot/testrun.html')
+     elif request.method=='GET':
+          return render(request,'iiot/testrun.html')

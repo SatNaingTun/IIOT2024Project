@@ -2,7 +2,12 @@
 {% load crispy_forms_tags %}
 
 {% block 'body' %}
-<div class="d-grid gap-2 d-md-block">
+<div>
+    <div class="mb-3 mt-3">
+        <input type="number" class="form-control" id="TimeSchedule"  name="TimeSchedule" placeholder="Time Schedule" >
+    </div>
+    <div class="d-grid gap-2 d-md-block">
     <button class="btn btn-lg btn-danger" type="button">Start</button>
+    </div>
 </div>
 {% endblock %}
