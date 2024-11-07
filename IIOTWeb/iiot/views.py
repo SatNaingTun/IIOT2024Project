@@ -107,7 +107,7 @@ def registerInputDevice(request):
         except Exception as e:
             print(e)
             messages.error(request,'An error occurred while saving InputDevice')
-        return redirect(registerInputDevice)
+        return redirect(listDevices)
 
      elif request.method=='GET':
           inputDeviceForm=InputDeviceForm()
@@ -126,7 +126,7 @@ def registerMqtt(request):
         except Exception as e:
             print(e)
             messages.error(request,'An error occurred while saving InputDevice')
-        return redirect(registerMqtt)
+        return redirect(listDevices)
 
      elif request.method=='GET':
           mqttServerForm=MqttServerForm()
@@ -172,6 +172,51 @@ def editMqtt(request,id):
         messages.error(request,'An error occurred while editing Mqtt Server')
     return redirect(listDevices)
 
+      
+def removeMqtt(request,id):
+    try:
+        mqttServer=MqttServers.objects.get(id=id)
+        print(id)
+        if mqttServer is None:
+            raise Exception
+        
+        mqttServer.delete()
+        return redirect(listDevices)
+        
+    except Exception as e:
+        messages.error(request,'An error occurred while removing Mqtt Server')
+    return redirect(listDevices)
+
+    
+def removeInputAddress(request,address_id):
+    try:
+        inputAddress=InputAddresses.objects.get(address_id=address_id)
+        
+        if inputAddress is None:
+            raise Exception
+        
+        inputAddress.delete()
+        return redirect(listInputAddresses)
+        
+    except Exception as e:
+        messages.error(request,'An error occurred while removing Mqtt Server')
+    return redirect(listInputAddresses)
+
+
+def removeInputDevice(request,device_id):
+    try:
+        inputDevice=InputDevices.objects.get(device_id=device_id)
+        
+        if inputDevice is None:
+            raise Exception
+        
+        inputDevice.delete()
+        return redirect(listDevices)
+        
+    except Exception as e:
+        messages.error(request,'An error occurred while removing Mqtt Server')
+    return redirect(listDevices)
+
 
 
 # def addInputAddress(request,device_id):
@@ -200,7 +245,7 @@ def editMqtt(request,id):
 
 def addInputAddress(request, device_id):
     # Attempt to fetch the input device; return 404 if not found
-    inputDevice = get_object_or_404(InputDevices, device_id=device_id)
+    inputDevice = InputDevices.objects.get(InputDevices, device_id=device_id)
     
     if request.method == 'POST':
         inputAddressForm = InputAddressForm(request.POST)
@@ -209,7 +254,8 @@ def addInputAddress(request, device_id):
             # Create a new InputAddress instance, but don't save it to the database yet
             inputAddress = inputAddressForm.save(commit=False)
             # Assign the device to the InputAddress instance
-            inputAddress.device = inputDevice
+            if inputDevice is not None:
+                inputAddress.device = inputDevice
             # Save the InputAddress to the database
             inputAddress.save()
             

@@ -9,8 +9,8 @@ import logging
 logging.basicConfig(level=logging.INFO) 
 logger = logging.getLogger(__name__)
 
-tcp_host = '192.168.200.2'
-tcp_port = 503
+# tcp_host = '192.168.200.2'
+# tcp_port = 503
 
 coil_address = 1
 # value_to_write = True
@@ -80,7 +80,7 @@ if __name__=='__main__':
 
                 client.close()
             else:
-                print(f"Failed to connect to Modbus TCP on {tcp_host}")
+                print(f"Failed to connect to Modbus TCP on ")
                 client.close()
 
             time.sleep(1)

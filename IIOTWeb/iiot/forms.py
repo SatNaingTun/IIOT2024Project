@@ -21,3 +21,7 @@ class MqttServerForm(forms.ModelForm):
          fields={'device_name','ip_address','port','mqtt_user_name','mqtt_password'}
 
 
+class InfluxDBForm(forms.Form):
+    db_name = forms.CharField(label='Database Name', max_length=100)
+
+

@@ -1,11 +1,13 @@
 <div class="card shadow-sm mb-3" style="max-width: 18rem;"> 
     <div class="card-body"> 
-        <h5 class="card-title">{{dev.device_name}}</h5> 
+        <h5 class="card-title">{{dev.device_name}}
+            <a href="{% url 'RemoveMqtt'  id=dev.id %}" type="button" class="btn btn-sm btn-outline-secondary">Delete</a>
+        </h5> 
         <ul class="list-unstyled mb-3"> 
             <li>{{dev.id}}</li> 
             <li>{{dev.ip_address}}</li> <li>{{dev.port}}</li> 
             <li>{{dev.device_name}}</li>
-            <li>{{dev.mqtt_user_name}}</li> 
+            <!-- <li>{{dev.mqtt_user_name}}</li>  -->
         </ul> 
         <div class="d-flex justify-content-end"> 
             <a href="{% url 'EditMqtt'  id=dev.id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a>

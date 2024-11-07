@@ -2,10 +2,13 @@
 {% load crispy_forms_tags %}
 
 {% block 'body' %}
-<div class="album py-5 bg-light">
-    <h1>List of Input addresses</h1> 
+<!-- <div class="album py-5 bg-light"> -->
+    <h1>List of Input addresses
+        
+    </h1> 
     <div class="container"> 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
+        <div class="card overflow-auto" style="background-color: #f0f8ff; padding: 20px;">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
             {% for adr in inputAddresses %} 
             <div class="col">
                 
@@ -13,9 +16,10 @@
                 <!-- <p>{{dev.id}}</p>  -->
             </div> 
             {% endfor %} 
+        </div>
         </div> 
     </div> 
-</div>
+<!-- </div> -->
 
 
 {% endblock %}

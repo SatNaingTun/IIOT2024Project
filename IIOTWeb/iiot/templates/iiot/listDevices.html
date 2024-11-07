@@ -3,29 +3,32 @@
 
 {% block 'body' %}
 <a href="{% url 'test'  %}" type="button" class="btn btn-sm btn-outline-secondary">test PLC</a>
-<div class="album py-5 bg-light">
+
     <div>
-    <h1>List of Input Devices <a href="{% url 'RegisterInput'  %}" type="button" class="btn btn-sm btn-outline-secondary">Register Input Device</a>
+    <h1>List of Input Devices 
+        <a href="{% url 'RegisterInput'  %}" type="button" class="btn btn-sm btn-outline-secondary">Register Input Device</a>
     </h1>
     </div> 
     <div class="container"> 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
-            {% for dev in inputDevices %} 
-            <div class="col"> 
-                {% include "components/listing_InputDevices.html" %} 
-                <!-- <p>{{dev.id}}</p>  -->
+        <div class="card overflow-auto" style="background-color: #f0f8ff; padding: 20px;">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
+                {% for dev in inputDevices %} 
+                <div class="col"> 
+                    {% include "components/listing_InputDevices.html" %} 
+                </div> 
+                {% endfor %} 
             </div> 
-            {% endfor %} 
-        </div> 
-    </div> 
-</div>
-<div class="album py-5 bg-light"> 
+        </div>
+    </div>
+    
+
     <div>
         <h1>List of Mqtt Server <a href="{% url 'RegMqtt'  %}" type="button" class="btn btn-sm btn-outline-secondary">Register Mqtt Server</a>
         </h1>
         </div>
     <div class="container"> 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
+        <div class="card overflow-auto" style="background-color: #f0f8ff; padding: 20px;">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
             {% for dev in mqttServers %} 
             <div class="col"> 
                 {% include "components/listing_MqttServers.html" %} 
@@ -33,6 +36,7 @@
             </div> 
             {% endfor %} 
         </div> 
+    </div>
     </div> 
-</div>
+
 {% endblock %}
