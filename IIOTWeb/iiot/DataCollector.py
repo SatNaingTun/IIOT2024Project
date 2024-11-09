@@ -19,7 +19,8 @@ def getCollect():
             dataDict2={}
             result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,str(inputDevice.ip_address),inputDevice.port,inputDevice.rack,inputDevice.slot)
             dataDict2[adr.variable_name]=result
-            adr.update(data=str(result))
+            adr.data=result
+            adr.save(update_fields=['data'])
         dataDict[inputDevice]=dataDict2
             
     for mqttServer in mqttServers :
@@ -46,7 +47,8 @@ def getCollectByInputDevice(device_id):
 
             result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,str(inputDevice.ip_address),inputDevice.port,inputDevice.rack,inputDevice.slot)
             # result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,'192.168.200.2',102,0x0100,0x0100)
-            
+            adr.data=result
+            adr.save(update_fields=['data'])
             print(result)
             # print(inputDevice.port)
             dataDict[adr.variable_name]=result
