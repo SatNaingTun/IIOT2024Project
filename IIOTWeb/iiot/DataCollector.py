@@ -27,7 +27,8 @@ def getCollect():
             
     for mqttServer in mqttServers :
         client=MyMqtt.connect_mqtt(mqttServer.ip_address,mqttServer.port,mqttServer.mqtt_user_name,mqttServer.mqtt_password)
-        client.publish("iiot/data", str(dataDict))
+        client.publish(mqttServer.topic, str(dataDict))
+        client.disconnect()
             #json.dumps(myDict)   
     # print(dataDict)
     return dataDict
@@ -51,7 +52,7 @@ def getCollectByInputDevice(device_id):
             
     for mqttServer in mqttServers :
         client=MyMqtt.connect_mqtt(mqttServer.ip_address,mqttServer.port,mqttServer.mqtt_user_name,mqttServer.mqtt_password)
-        client.publish("iiot/data", str(dataDict))       
+        client.publish(mqttServer.topic, str(dataDict))       
     # print(dataDict)
     return dataDict
 

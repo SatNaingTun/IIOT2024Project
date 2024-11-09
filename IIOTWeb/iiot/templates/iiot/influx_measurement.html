@@ -6,7 +6,9 @@
     <form method="POST">
         {% csrf_token %}
         {{ form|crispy }}
+        <div class="d-grid gap-2 d-md-block">
         <button type="submit">Create Measurement</button>
+    </div>
     </form>
 
     <br>

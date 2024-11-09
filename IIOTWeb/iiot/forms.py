@@ -18,7 +18,7 @@ class MqttServerForm(forms.ModelForm):
     
     class Meta:
          model=MqttServers
-         fields={'device_name','ip_address','port','mqtt_user_name','mqtt_password'}
+         fields={'device_name','ip_address','port','mqtt_user_name','mqtt_password','topic'}
 
 
 class InfluxDBForm(forms.Form):

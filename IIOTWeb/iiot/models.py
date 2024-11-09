@@ -32,6 +32,7 @@ class MqttServers(models.Model):
     device_name=models.CharField(max_length=24)
     ip_address=models.GenericIPAddressField(max_length=24)
     port=models.IntegerField()
+    topic=models.CharField(max_length=24,default="iiot/data")
     mqtt_user_name=models.CharField(max_length=24)
     mqtt_password=models.CharField(max_length=24)
 
