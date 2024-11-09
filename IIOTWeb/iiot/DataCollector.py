@@ -38,14 +38,6 @@ def getCollectByInputDevice(device_id):
     for inputDevice in inputDevices:
         inputAddresses=InputAddresses.objects.filter(device=inputDevice)
         for adr in inputAddresses:
-        # adr.address getData(protocol_name,Address,IPAddress,Port,RackOrTsap,SlotOrTsapLogo)
-            # print(inputDevice.device_protocol)
-            # print("",adr.address)
-            # print("",inputDevice.ip_address)
-            # print(inputDevice.port)
-            # print(inputDevice.rack)
-            # print(inputDevice.slot)
-
             result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,str(inputDevice.ip_address),inputDevice.port,inputDevice.rack,inputDevice.slot)
             # result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,'192.168.200.2',102,0x0100,0x0100)
             adr.data=result
@@ -57,10 +49,11 @@ def getCollectByInputDevice(device_id):
     print(dataDict)
     return dataDict
 
-def getCollectBySchedule(myTime,status):
-    dataDict = RepeatedTimer.RepeatedTimer(myTime, getCollect)
+def getCollectBySchedule(myTime):
+    # dataDict = RepeatedTimer.RepeatedTimer(myTime, getCollect)
     # print(dataDict)
-    # RepeatedTimer.RepeatedTimer(10, print, 'Hello world')
+    
+    RepeatedTimer.RepeatedTimer(1, getCollect)
 
 
 
