@@ -8,4 +8,4 @@ class IiotConfig(AppConfig):
     # def ready(self):
     #     from .DataCollector import getCollectBySchedule
     #     getCollectBySchedule(1)
-        # return super().ready()
+       

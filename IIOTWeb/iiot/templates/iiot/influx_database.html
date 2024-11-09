@@ -1,0 +1,27 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block 'body' %}
+    <h1>Create InfluxDB Database</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="create">Create Database</button>
+    </form>
+    <h2>Existing Databases</h2>
+    {% if databases %}
+        <form method="POST">
+            {% csrf_token %}
+            <select name="database_name">
+                {% for db in databases %}
+                    <option value="{{ db }}">{{ db }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="delete">Delete Selected Database</button>
+        </form>
+    {% else %}
+        <p>No existing databases.</p>
+    {% endif %}
+    <a href="{% url 'ListDevices' %}">Back to List Data</a>
+
+{% endblock %}

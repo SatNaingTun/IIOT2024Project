@@ -3,17 +3,11 @@ from django.http import HttpResponse
 from django.contrib import messages
 # from .Controllers import PlcAllInOne
 from .PlcProtocols import PlcProtocol
-from .Controllers import S7PLCLogo
+from .Controllers import S7PLCLogo,InfluxDb
 
-# from .forms import InputDeviceForm
-# from .forms import InputAddressForm
-# from .forms import MqttServerForm
-# from .models import MqttServers
-# from .models import InputDevice
-# from .models import InputAddress
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import InputAddressForm,InputDeviceForm,MqttServerForm
+from .forms import InfluxDBForm, InputAddressForm,InputDeviceForm,MqttServerForm
 from .models import InputDevices, InputAddresses,MqttServers
 from .DataCollector import getCollect
 
@@ -217,32 +211,6 @@ def removeInputDevice(request,device_id):
         messages.error(request,'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
 
-
-
-# def addInputAddress(request,device_id):
-#     try:
-#         # inputDevice=get_object_or_404(InputDevice, device=device_id)
-#         inputDevice=InputDevice.objects.get(device_id=device_id)
-#         if inputDevice is None:
-#             raise Exception
-#         if request.method=="POST":
-#             inputAddressForm=InputAddressForm(request.POST,instance=inputDevice)
-#             if inputAddressForm.is_valid():
-#                 inputAddress=InputAddressForm.save(commit=False)
-#                 inputAddress.device=inputDevice
-#                 inputAddress.save()
-                
-#                 # messages.info(request,f'{inputAddress.variable_name} updated Successfully')
-#             return redirect(listDevices)
-#         else:
-#             inputAddressForm=InputAddressForm()
-#             return render(request,'iiot/editInputAddress.html',{"inputAddressForm":inputAddressForm})
-#     except Exception as e:
-#         messages.error(request,'An error occurred while editing Input Address')
-#     return redirect(listDevices)
-
-
-
 def addInputAddress(request, device_id):
     # Attempt to fetch the input device; return 404 if not found
     inputDevice = InputDevices.objects.get(device_id=device_id)
@@ -296,6 +264,28 @@ def editInputAddress(request, address_id):
     except Exception as e:
         messages.error(request,'An error occurred while editing InputDevice')
         return redirect(listInputAddresses)
+
+
+def influx_database_view(request):
+    """View to handle database creation, deletion, and listing."""
+    form = InfluxDBForm()  # Instantiate the form
+    if request.method == 'POST':
+        if 'create' in request.POST:
+            form = InfluxDBForm(request.POST)
+            if form.is_valid():
+                db_name = form.cleaned_data['db_name']
+                InfluxDb.create_database(db_name)
+                messages.info(request,f"Influx database {db_name} is created")
+                return redirect(listDevices)  # Redirect to PLC view after creating database
+        elif 'delete' in request.POST:
+            db_name = request.POST.get('database_name')
+            if db_name:
+                InfluxDb.delete_database(db_name)
+                messages.info(request,f"Influx database {db_name} is deleted")
+                return redirect(listDevices)  # Redirect to PLC view after deleting database
+
+    databases = InfluxDb.list_databases()  # List all databases
+    return render(request, 'iiot/influx_database.html', {'form': form, 'databases': databases})
 
       
 def testRun(request):
