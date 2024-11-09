@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import redirect, render
 from iiot.forms import InfluxDBForm
 from influxdb import InfluxDBClient
@@ -6,6 +7,21 @@ import logging
 # InfluxDB client initialization
 INFLUXDB_HOST = '192.168.1.102'
 INFLUXDB_PORT = 8086
+
+# json_payLoad=[]
+# data={
+#     "measurement":"stocks",
+#     "tags":{
+#         "ticker":"TSLA"
+#     },
+#     "time":datetime.now(),
+#     "fields":{
+#         "open":688.37,
+#         "close":667.93
+         
+#     }
+# }
+
 client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT)
 
 
@@ -38,3 +54,15 @@ def list_databases():
     except Exception as e:
         logger.error("Error retrieving databases: %s", str(e))
         return []
+
+def create_measurement(database_name, measurement_name, field_name="value", field_value=1):
+    client.switch_database(database_name)
+    json_body = [{
+        "measurement": measurement_name,
+        "fields": {
+            field_name: field_value
+        }
+    }]
+    client.write_points(json_body)
+    logger.info(f"Measurement {measurement_name} created in database {database_name} with field {field_name}: {field_value}")
+

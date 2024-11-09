@@ -7,7 +7,7 @@ from .Controllers import S7PLCLogo,InfluxDb
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import InfluxDBForm, InputAddressForm,InputDeviceForm,MqttServerForm
+from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm,InputDeviceForm,MqttServerForm
 from .models import InputDevices, InputAddresses,MqttServers
 from .DataCollector import getCollect
 
@@ -287,6 +287,30 @@ def influx_database_view(request):
     databases = InfluxDb.list_databases()  # List all databases
     return render(request, 'iiot/influx_database.html', {'form': form, 'databases': databases})
 
+
+def create_measurement_view(request):
+    # Fetch the list of databases created from InfluxDB
+    databases = InfluxDb.list_databases()
+
+    if request.method == 'POST':
+        form = CreateMeasurementForm(request.POST, databases=databases)  # Pass databases to the form
+        if form.is_valid():
+            database_name = form.cleaned_data['database_name']
+            measurement_name = form.cleaned_data['measurement_name']
+            field_name = form.cleaned_data['field_name'] or "value"
+            field_value = form.cleaned_data['field_value'] or 1
+
+            try:
+                # Assuming create_measurement interacts with InfluxDB
+                InfluxDb.create_measurement(database_name, measurement_name, field_name, field_value)
+                messages.success(request, f"Measurement '{measurement_name}' created in '{database_name}' with field '{field_name}' = {field_value}")
+            except Exception as e:
+                messages.error(request, f"Error creating measurement: {str(e)}")
+            return redirect('RegInfluxMeasurement')  # Redirect to the same page after creation
+    else:
+        form = CreateMeasurementForm(databases=databases)  # Pass databases to the form when rendering
+
+    return render(request, 'iiot/influx_measurement.html', {'form': form, 'databases': databases})  # Render the form template
       
 def testRun(request):
      if request.method=='POST':

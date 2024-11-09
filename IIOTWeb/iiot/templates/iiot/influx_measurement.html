@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block 'body' %}
+    <h1>Create New Measurement</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit">Create Measurement</button>
+    </form>
+
+    <br>
+
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="{% url 'RegInflux' %}">Back to PLC Data</a>
+
+    {% endblock %}
