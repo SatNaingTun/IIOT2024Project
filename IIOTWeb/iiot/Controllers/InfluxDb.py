@@ -1,6 +1,6 @@
 import datetime
 from django.shortcuts import redirect, render
-from iiot.forms import InfluxDBForm
+# from ..forms import InfluxDBForm
 from influxdb import InfluxDBClient
 import logging
 
@@ -22,7 +22,11 @@ INFLUXDB_PORT = 8086
 #     }
 # }
 
-client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT)
+# client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT)
+def connectConnection(host='192.168.1.102',port=8086):
+    global client
+    client = InfluxDBClient(host, port)
+    return client
 
 
 logging.basicConfig(level=logging.INFO)
@@ -65,4 +69,9 @@ def create_measurement(database_name, measurement_name, field_name="value", fiel
     }]
     client.write_points(json_body)
     logger.info(f"Measurement {measurement_name} created in database {database_name} with field {field_name}: {field_value}")
+
+
+if __name__=='__main__':
+    connectConnection()
+    create_measurement('test5','tst_mes',field_value=5)
 

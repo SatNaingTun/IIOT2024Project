@@ -1,7 +1,7 @@
 from .models import InputDevices, InputAddresses,MqttServers
 from .PlcProtocols import PlcProtocol
 from .PlcProtocols import S7PLCLogo
-from .Controllers import RepeatedTimer, MyMqtt
+from .Controllers import RepeatedTimer, MyMqtt,InfluxDb
 import json
 
  
@@ -13,6 +13,8 @@ def getCollect():
     # print(dataDict)
     inputDevices=InputDevices.objects.all()
     mqttServers=MqttServers.objects.all()
+    influxDb=InfluxDb.connectConnection()
+    
     
     for inputDevice in inputDevices:
         dataDict2={}
@@ -20,9 +22,11 @@ def getCollect():
         for adr in inputAddresses:
             
             result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,str(inputDevice.ip_address),inputDevice.port,inputDevice.rack,inputDevice.slot)
-            dataDict2[adr.variable_name]=result
-            adr.data=str(result)
-            adr.save(update_fields=['data'])
+            if result is not None:
+                dataDict2[adr.variable_name]=result
+                adr.data=str(result)
+                InfluxDb.create_measurement('test5',adr.variable_name,field_value=result)
+                adr.save(update_fields=['data'])
         dataDict[inputDevice]=dataDict2
             
     for mqttServer in mqttServers :
