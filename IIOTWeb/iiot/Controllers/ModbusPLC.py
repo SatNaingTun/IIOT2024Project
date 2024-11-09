@@ -67,12 +67,14 @@ def readData(address,count=1,slave=1):
         result=client.read_holding_registers(address=address, count=count,slave=slave)
     
     if not result.isError():
-        if count==1:
+        # if count==1:
             print("Result:",result.registers[0])
+            client.close()
             return result.registers[0]
-        else:
-            print("Result:",result.registers)
-            return result.registers
+        # else:
+        #     print("Result:",result.registers)
+        #     client.close()
+        #     return result.registers
     else:
         logger.error(f"Error reading register from address {address}")
         return None
