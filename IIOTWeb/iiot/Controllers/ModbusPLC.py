@@ -45,29 +45,34 @@ def read_reg(address,count=1,slave=1):
     result = client.read_holding_registers(address=address, count=count,slave=slave)
     print(result.registers)
     if not result.isError():
-        print("Result:",result.registers)
+        print("Result:",result.registers[0])
         return result.registers[0]
     else:
         logger.error(f"Error reading register from address {address}")
         return None
     
 def readData(address,count=1,slave=1):
+    print(f"Reading Data from address {address}")
     if(0<address<10000):
-        address=address-10000
+        address=address
         result=client.read_coils(address, count)
     elif(10000<address<20000):
         address=address-10000
         result=client.read_discrete_inputs(address=address, count=count,slave=slave)
     elif(30000<address<40000):
-        address=address-10000
+        address=address-30000
         result=client.read_input_registers(address=address, count=count,slave=slave)
     elif(40000<address<50000):
-        address=address-10000
+        address=address-40000
         result=client.read_holding_registers(address=address, count=count,slave=slave)
     
     if not result.isError():
-        print("Result:",result.registers)
-        return result.registers[0]
+        if count==1:
+            print("Result:",result.registers[0])
+            return result.registers[0]
+        else:
+            print("Result:",result.registers)
+            return result.registers
     else:
         logger.error(f"Error reading register from address {address}")
         return None
@@ -82,13 +87,11 @@ if __name__=='__main__':
             # client = ModbusTcpClient(host='192.168.200.2',port=504)
             # connected=client.connect()
             connected=connectConnection(host='192.168.200.2',port=504)
-            logger.info(connected)
+            logger.info("Conntected:"+str(connected))
             if connected:
-                # write_coil(client, coil_address, value_to_write)
-                # value_to_write = not value_to_write
-
-                # read_coil(client, coil_address, num_to_read)
-                readData(address=531,count=1,slave=1)
+                
+                # read_reg(address=530,count=1,slave=1)
+                readData(address=40530,count=1,slave=1)
 
                 client.close()
             else:
