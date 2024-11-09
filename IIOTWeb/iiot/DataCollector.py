@@ -14,12 +14,13 @@ def getCollect():
     mqttServers=MqttServers.objects.all()
     
     for inputDevice in inputDevices:
+        dataDict2={}
         inputAddresses=InputAddresses.objects.filter(device=inputDevice)
         for adr in inputAddresses:
-            dataDict2={}
+            
             result=PlcProtocol.getData(inputDevice.device_protocol,adr.address,str(inputDevice.ip_address),inputDevice.port,inputDevice.rack,inputDevice.slot)
             dataDict2[adr.variable_name]=result
-            adr.data=result
+            adr.data=str(result)
             adr.save(update_fields=['data'])
         dataDict[inputDevice]=dataDict2
             

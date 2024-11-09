@@ -261,7 +261,7 @@ def addInputAddress(request, device_id):
             
             # Show success message and redirect
             messages.success(request, f'{inputAddress.variable_name} added successfully to {inputDevice.device_name}.')
-            return redirect('ListInput')  # Adjust this to the correct view name or path for listing devices
+            return redirect('ListInputAddress')  # Adjust this to the correct view name or path for listing devices
         
         else:
             # If the form is invalid, show an error message
