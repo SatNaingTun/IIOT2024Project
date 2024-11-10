@@ -7,9 +7,11 @@ from .Controllers import S7PLCLogo,InfluxDb
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm,InputDeviceForm,MqttServerForm,InfluxServerForm,InfluxMeasurementForm
+from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm,InputDeviceForm,MqttServerForm,InfluxServerForm,InfluxMeasurementForm,PiInfoForm
 from .models import InputDevices, InputAddresses,MqttServers,InfluxDatabases,InfluxMeasurement
 from .DataCollector import getCollect
+
+import os
 
 # Create your views here.
 plc_data = []
@@ -422,6 +424,28 @@ def editInputAddress(request, address_id):
     except Exception as e:
         messages.error(request,'An error occurred while editing InputDevice')
         return redirect(listInputAddresses)
+
+def pi_profile_view(request):
+    """View to handle database creation, deletion, and listing."""
+    form = PiInfoForm()  # Instantiate the form
+    form.pi_name=os.name
+    # if request.method == 'POST':
+        # if 'create' in request.POST:
+        #     form = PiInfoForm(request.POST)
+            # if form.is_valid():
+            #     db_name = form.cleaned_data['db_name']
+            #     InfluxDb.create_database(db_name)
+            #     messages.info(request,f"Influx database {db_name} is created")
+            #     return redirect(listDevices)  # Redirect to PLC view after creating database
+        # elif 'delete' in request.POST:
+        #     db_name = request.POST.get('database_name')
+        #     if db_name:
+        #         InfluxDb.delete_database(db_name)
+        #         messages.info(request,f"Influx database {db_name} is deleted")
+        #         return redirect(listDevices)  # Redirect to PLC view after deleting database
+
+    # databases = InfluxDb.list_databases()  # List all databases
+    return render(request, 'iiot/form.html', {'myform': form})
 
 
 def influx_database_view(request):

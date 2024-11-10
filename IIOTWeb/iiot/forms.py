@@ -38,6 +38,10 @@ class InfluxMeasurementForm(forms.ModelForm):
 class InfluxDBForm(forms.Form):
     db_name = forms.CharField(label='Database Name', max_length=100)
 
+class PiInfoForm(forms.Form):
+    pi_name=forms.CharField(label='Pi Name', max_length=20)
+    pi_ip_address=forms.GenericIPAddressField(label='Pi Address',max_length=24)
+
 
 class CreateMeasurementForm(forms.Form):
     database_name = forms.ChoiceField(choices=[], label="Select Database")  # Set choices dynamically
