@@ -70,6 +70,10 @@ def create_measurement(database_name, measurement_name, field_name="value", fiel
     client.write_points(json_body)
     logger.info(f"Measurement {measurement_name} created in database {database_name} with field {field_name}: {field_value}")
 
+def get_list(database_name, measurement_name,query:str):
+    client.switch_database(database_name)
+    client.query(query)
+
 
 if __name__=='__main__':
     connectConnection()

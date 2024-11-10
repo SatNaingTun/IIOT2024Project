@@ -2,9 +2,11 @@ from .models import InputDevices, InputAddresses,MqttServers
 from .PlcProtocols import PlcProtocol
 from .PlcProtocols import S7PLCLogo
 from .Controllers import RepeatedTimer, MyMqtt,InfluxDb
+
 import json
 
- 
+
+
 # from PlcAllInOne import *
 
 def getCollect():
@@ -60,11 +62,20 @@ def getCollectByInputDevice(device_id):
     # print(dataDict)
     return dataDict
 
-def getCollectBySchedule(myTime):
-    # dataDict = RepeatedTimer.RepeatedTimer(myTime, getCollect)
-    # print(dataDict)
+# def ask2Stop():
+#     try:
+#         input("Press Enter to stop the repeating timer...\n")
+#     finally:
+#         rt.stop()
+#     print("Timer stopped.")
+
+def getCollectBySchedule(interval):
+    rt=RepeatedTimer.RepeatedTimer(interval=interval,function=getCollect)
+
+   
     
-    RepeatedTimer.RepeatedTimer(1, getCollect)
+    
+    
 
 
 

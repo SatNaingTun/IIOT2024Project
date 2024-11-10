@@ -269,6 +269,7 @@ def editInputAddress(request, address_id):
 def influx_database_view(request):
     """View to handle database creation, deletion, and listing."""
     form = InfluxDBForm()  # Instantiate the form
+    InfluxDb.connectConnection()
     if request.method == 'POST':
         if 'create' in request.POST:
             form = InfluxDBForm(request.POST)
@@ -290,6 +291,7 @@ def influx_database_view(request):
 
 def create_measurement_view(request):
     # Fetch the list of databases created from InfluxDB
+    InfluxDb.connectConnection()
     databases = InfluxDb.list_databases()
 
     if request.method == 'POST':

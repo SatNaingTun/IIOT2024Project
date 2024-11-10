@@ -7,5 +7,6 @@ class IiotConfig(AppConfig):
 
     # def ready(self):
     #     from .DataCollector import getCollectBySchedule
-    #     getCollectBySchedule(1)
+    #     rt=getCollectBySchedule(2)
+
        
