@@ -11,7 +11,7 @@ from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm,InputDe
 from .models import InputDevices, InputAddresses,MqttServers,InfluxDatabases,InfluxMeasurement
 from .DataCollector import getCollect
 
-import os
+import os,socket,platform
 
 # Create your views here.
 plc_data = []
@@ -426,9 +426,13 @@ def editInputAddress(request, address_id):
         return redirect(listInputAddresses)
 
 def pi_profile_view(request):
-    """View to handle database creation, deletion, and listing."""
-    form = PiInfoForm()  # Instantiate the form
-    form.pi_name=os.name
+      
+    initial_data={
+        'pi_name':platform.uname()[1],
+        'pi_ip_address':'ip'
+        }
+    form=PiInfoForm(initial=initial_data)
+    
     # if request.method == 'POST':
         # if 'create' in request.POST:
         #     form = PiInfoForm(request.POST)
