@@ -27,10 +27,10 @@ def getCollect():
             if result is not None:
                 dataDict2[adr.variable_name]=result
                 adr.data=str(result)
-                influxMeasurement=InfluxMeasurement.objects.filter(data=adr)
-                print(influxMeasurement.database.database)
-                if influxMeasurement is not None:
-                    InfluxDb.create_measurement(influxMeasurement.database.database,influxMeasurement.measurement_name,field_value=result)
+                influxMeasurements=InfluxMeasurement.objects.filter(data=adr)
+                for influxMeasurement in influxMeasurements:
+                    if influxMeasurement is not None:
+                        InfluxDb.create_measurement(influxMeasurement.database.database,influxMeasurement.measurement_name,field_value=result)
                 adr.save(update_fields=['data'])
         dataDict[inputDevice]=dataDict2
             
