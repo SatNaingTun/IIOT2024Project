@@ -1,0 +1,17 @@
+<div class="card shadow-sm mb-3" style="max-width: 18rem;"> 
+    <div class="card-body"> 
+        <h5 class="card-title">{{adr.measurement_name}}
+            <a href="{% url 'RemoveMeasurement'  id=adr.id %}" type="button" class="btn btn-sm btn-outline-secondary">Delete</a>
+        </h5> 
+        <ul class="list-unstyled mb-3"> 
+            
+            <li>{{adr.measurement_name}}</li> 
+            <li>{{adr.data}}</li>
+            <li>Data: {{adr.database}}</li>  
+           
+        </ul> 
+        <div class="d-flex justify-content-end"> 
+            <a href="{% url 'EditMeasurement' id=adr.id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a> 
+        </div> 
+    </div> 
+</div>

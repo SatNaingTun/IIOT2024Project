@@ -41,13 +41,28 @@ class MqttServers(models.Model):
     def __str__(self):
         return self.device_name
     
-class InfluxDatabase(models.Model):
+class InfluxDatabases(models.Model):
     device_id=models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True)
-    device_name=models.CharField(max_length=24,default='iiot_influx')
+    device_name=models.CharField(max_length=24)
     ip_address=models.GenericIPAddressField(max_length=24)
     port=models.IntegerField()
-    user_name=models.CharField(max_length=24)
-    password=models.CharField(max_length=24)
+    database=models.CharField(max_length=24)
+    # user_name=models.CharField(max_length=24)
+    # password=models.CharField(max_length=24)
 
     def __str__(self):
         return self.device_name
+
+  
+class InfluxMeasurement(models.Model):
+    id=models.UUIDField(primary_key=True,default=uuid.uuid4,unique=True)
+    measurement_name=models.CharField(max_length=24)
+    data=models.ForeignKey(InputAddresses,on_delete=models.CASCADE)
+    database=models.ForeignKey(InfluxDatabases,on_delete=models.CASCADE)
+
+    
+    # user_name=models.CharField(max_length=24)
+    # password=models.CharField(max_length=24)
+
+    def __str__(self):
+        return self.measurement_name

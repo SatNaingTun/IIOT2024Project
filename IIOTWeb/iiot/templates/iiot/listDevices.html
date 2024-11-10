@@ -39,4 +39,21 @@
     </div>
     </div> 
 
+    <div>
+        <h1>List of Influx Databases <a href="{% url 'RegInflux'  %}" type="button" class="btn btn-sm btn-outline-secondary">Register Influx Databases</a>
+        </h1>
+        </div>
+    <div class="container"> 
+        <div class="card overflow-auto" style="background-color: #f0f8ff; padding: 20px;">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
+            {% for dev in influxDatabases %} 
+            <div class="col"> 
+                {% include "components/listing_InfluxDatabases.html" %} 
+                <!-- <p>{{dev.id}}</p>  -->
+            </div> 
+            {% endfor %} 
+        </div> 
+    </div>
+    </div> 
+
 {% endblock %}

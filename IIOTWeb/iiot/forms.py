@@ -1,5 +1,5 @@
 from django import forms
-from .models import InputDevices, MqttServers,InputAddresses
+from .models import InputDevices, MqttServers,InputAddresses,InfluxDatabases,InfluxMeasurement
 
 class InputDeviceForm(forms.ModelForm):
     
@@ -19,6 +19,20 @@ class MqttServerForm(forms.ModelForm):
     class Meta:
          model=MqttServers
          fields={'device_name','ip_address','port','mqtt_user_name','mqtt_password','topic'}
+
+
+class InfluxServerForm(forms.ModelForm):
+    
+    class Meta:
+         model=InfluxDatabases
+         fields={'device_name','ip_address','port','database'}
+
+
+class InfluxMeasurementForm(forms.ModelForm):
+    
+    class Meta:
+         model=InfluxMeasurement
+         fields={'measurement_name','data','database'}
 
 
 class InfluxDBForm(forms.Form):

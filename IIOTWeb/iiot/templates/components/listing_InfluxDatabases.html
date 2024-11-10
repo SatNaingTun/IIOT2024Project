@@ -7,12 +7,13 @@
             <li>{{dev.device_id}}</li> 
             <li>{{dev.ip_address}}</li> 
             <li>{{dev.port}}</li> 
-            <li>{{dev.device_protocol}}</li> 
+            
         </ul> 
         <div class="d-flex justify-content-end"> 
-            <a href="{% url 'EditInput' device_id=dev.device_id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a> 
-            <a href="{% url 'RegInputAddress' device_id=dev.device_id %}" type="button" class="btn btn-sm btn-outline-secondary">Add address</a>
-            <a href="{% url 'ListInputAddress' %}" type="button" class="btn btn-sm btn-outline-secondary">List addresses</a>  
+            <a href="{% url 'EditInflux' device_id=dev.device_id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <a href="{% url 'AddMeasurement' %}" type="button" class="btn btn-sm btn-outline-secondary">Add Measurement</a>
+            <a href="{% url 'ListMeasurement' %}" type="button" class="btn btn-sm btn-outline-secondary">List Measurement</a> 
+            
         </div> 
     </div> 
 </div>

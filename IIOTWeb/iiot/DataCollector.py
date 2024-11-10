@@ -27,6 +27,7 @@ def getCollect():
             if result is not None:
                 dataDict2[adr.variable_name]=result
                 adr.data=str(result)
+                
                 InfluxDb.create_measurement('test5',adr.variable_name,field_value=result)
                 adr.save(update_fields=['data'])
         dataDict[inputDevice]=dataDict2

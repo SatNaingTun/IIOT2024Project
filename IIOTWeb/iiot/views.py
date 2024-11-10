@@ -7,8 +7,8 @@ from .Controllers import S7PLCLogo,InfluxDb
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm,InputDeviceForm,MqttServerForm
-from .models import InputDevices, InputAddresses,MqttServers
+from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm,InputDeviceForm,MqttServerForm,InfluxServerForm,InfluxMeasurementForm
+from .models import InputDevices, InputAddresses,MqttServers,InfluxDatabases,InfluxMeasurement
 from .DataCollector import getCollect
 
 # Create your views here.
@@ -17,9 +17,12 @@ plc_data = []
 def listDevices(request):
     inputDevices=InputDevices.objects.all()
     mqttServers=MqttServers.objects.all()
+    influxDatabases=InfluxDatabases.objects.all()
+    
     context={
          'inputDevices':inputDevices,
-         'mqttServers':mqttServers
+         'mqttServers':mqttServers,
+         'influxDatabases':influxDatabases
      }
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request,"iiot/listDevices.html",context)
@@ -31,6 +34,19 @@ def listInputAddresses(request):
      }
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request,"iiot/listInputAddresses.html",context)
+
+
+def listMeasurements(request):
+    influxMeasurements=InfluxMeasurement.objects.all()
+    context={
+         'influxMeasurements':influxMeasurements
+     }
+    # return HttpResponse("Hello, world. You're at the polls index.")
+    return render(request,"iiot/listInfluxMeasurement.html",context)
+
+
+
+
 
 
 def test(request):
@@ -147,6 +163,23 @@ def editInputDevice(request,device_id):
         messages.error(request,'An error occurred while editing InputDevice')
     return redirect(listDevices)
 
+def editMeasurement(request,id):
+    try:
+        influxMeasurement=InfluxMeasurement.objects.get(id=id)
+        if influxMeasurement is None:
+            raise Exception
+        if request.method=="POST":
+            influxMeasurementForm=InfluxMeasurementForm(request.POST,instance=influxMeasurement)
+            if influxMeasurementForm.is_valid:
+                influxMeasurement=influxMeasurementForm.save()
+                messages.info(request,f'{influxMeasurement.measurement_name} updated Successfully')
+            return redirect(listDevices)
+        else:
+            influxMeasurementForm=InfluxMeasurementForm(instance=influxMeasurement)
+            return render(request,'iiot/form.html',{"myform":influxMeasurementForm})
+    except Exception as e:
+        messages.error(request,'An error occurred while editing InputDevice')
+    return redirect(listDevices)
       
 def editMqtt(request,id):
     try:
@@ -180,6 +213,22 @@ def removeMqtt(request,id):
     except Exception as e:
         messages.error(request,'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
+
+     
+def removeMeasurement(request,id):
+    try:
+        influxMeasurement=InfluxMeasurement.objects.get(id=id)
+        print(id)
+        if influxMeasurement is None:
+            raise Exception
+        
+        influxMeasurement.delete()
+        return redirect(listMeasurements)
+        
+    except Exception as e:
+        messages.error(request,'An error occurred while removing Mqtt Server')
+    return redirect(listMeasurements)
+
 
     
 def removeInputAddress(request,address_id):
@@ -242,6 +291,115 @@ def addInputAddress(request, device_id):
     return render(request, 'iiot/editInputAddress.html', {
         'inputAddressForm': inputAddressForm,
         'inputDevice': inputDevice
+    })
+
+
+def addInfluxMeasurement(request):
+    # Attempt to fetch the input device; return 404 if not found
+    # influxDatabase = InfluxDatabases.objects.get(device_id=device_id)
+    
+    if request.method == 'POST':
+        influxMeasurementForm = InfluxMeasurementForm(request.POST)
+        
+        if influxMeasurementForm.is_valid():
+            # Create a new InputAddress instance, but don't save it to the database yet
+            influxMeasurement = influxMeasurementForm.save()
+            # Assign the device to the InputAddress instance
+            # if influxDatabase is not None:
+            #     influxDatabase.database = influxDatabase
+            
+            # # Save the InputAddress to the database
+            # influxMeasurement.save()
+            
+            # Show success message and redirect
+            messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {influxMeasurement.database}.')
+            return redirect(listDevices)  # Adjust this to the correct view name or path for listing devices
+        
+        else:
+            # If the form is invalid, show an error message
+            messages.error(request, 'Failed to save Measurement. Please check the form data.')
+    else:
+        # If GET request, initialize an empty form
+        influxMeasurementForm = InfluxMeasurementForm()
+
+    # Render the form with context
+    return render(request, 'iiot/form.html', {
+        'myform': influxMeasurementForm
+        
+    })
+
+
+def addInfluxDB(request):
+    # Attempt to fetch the input device; return 404 if not found
+    # inputDevice = InputDevices.objects.get(device_id=device_id)
+    
+    if request.method == 'POST':
+        influxServerForm = InfluxServerForm(request.POST)
+        
+        if influxServerForm.is_valid():
+            # Create a new InputAddress instance, but don't save it to the database yet
+            influxServer = influxServerForm.save()
+            # Assign the device to the InputAddress instance
+            # if inputDevice is not None:
+            #     inputAddress.device = inputDevice
+            # Save the InputAddress to the database
+            # inputAddress.save()
+            influxDb=InfluxDb.connectConnection(influxServer.ip_address,influxServer.port)
+            InfluxDb.create_database(influxServer.database)      
+
+            
+            # Show success message and redirect
+            messages.success(request, f' {influxServer.device_name} save successfully to {influxServer.device_name}.')
+            return redirect(listDevices)  # Adjust this to the correct view name or path for listing devices
+        
+        else:
+            # If the form is invalid, show an error message
+            messages.error(request, 'Failed to save Input Address. Please check the form data.')
+    else:
+        # If GET request, initialize an empty form
+        influxServerForm = InfluxServerForm()
+
+    # Render the form with context
+    return render(request, 'iiot/form.html', {
+        'myform': influxServerForm,
+        # 'inputDevice': inputDevice
+    })
+
+
+def editInfluxDB(request,device_id):
+    # Attempt to fetch the input device; return 404 if not found
+    influxServer = InfluxDatabases.objects.get(device_id=device_id)
+    
+    if request.method == 'POST':
+        influxServerForm = InfluxServerForm(request.POST)
+        
+        if influxServerForm.is_valid():
+            # Create a new InputAddress instance, but don't save it to the database yet
+            influxServer = influxServerForm.save()
+            influxDb=InfluxDb.connectConnection(influxServer.ip_address,influxServer.port)
+            InfluxDb.create_database(influxServer.database)
+            # Assign the device to the InputAddress instance
+            # if inputDevice is not None:
+            #     inputAddress.device = inputDevice
+            # Save the InputAddress to the database
+            # inputAddress.save()
+
+            
+            # Show success message and redirect
+            messages.success(request, f' {influxServer.device_name} updated successfully to {influxServer.device_name}.')
+            return redirect(listDevices)  # Adjust this to the correct view name or path for listing devices
+        
+        else:
+            # If the form is invalid, show an error message
+            messages.error(request, 'Failed to save Input Address. Please check the form data.')
+    else:
+        # If GET request, initialize an empty form
+        influxServerForm = InfluxServerForm(instance=influxServer)
+
+    # Render the form with context
+    return render(request, 'iiot/form.html', {
+        'myform': influxServerForm,
+        # 'inputDevice': inputDevice
     })
 
 
