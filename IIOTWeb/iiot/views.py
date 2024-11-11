@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 # from .Controllers import PlcAllInOne
 from .PlcProtocols import PlcProtocol
-from .Controllers import S7PLCLogo,InfluxDb
+from .Controllers import S7PLCLogo,InfluxDb,PiProfile
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
@@ -11,7 +11,7 @@ from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm,InputDe
 from .models import InputDevices, InputAddresses,MqttServers,InfluxDatabases,InfluxMeasurement
 from .DataCollector import getCollect
 
-import os,socket,platform
+
 
 # Create your views here.
 plc_data = []
@@ -442,10 +442,11 @@ def editInputAddress(request, address_id):
         return redirect(listInputAddresses)
 
 def pi_profile_view(request):
-      
+    
+    
     initial_data={
-        'pi_name':platform.uname()[1],
-        'pi_ip_address':'ip'
+        'pi_name':PiProfile.gethostname(),
+        'pi_ip_address': PiProfile.getIPaddr()
         }
     form=PiInfoForm(initial=initial_data)
     
