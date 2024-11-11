@@ -1,16 +1,3 @@
-# import os,socket,platform,pywifi
-
-
-# def gethostname():
-#     hostname=socket.gethostname()
-#     return hostname
-# def getIPaddr():
-#     hostname=socket.gethostname()
-#     IPAddr=socket.gethostbyname(hostname)
-#     return IPAddr
-
-    # platform.uname()[1]
-
 import os
 import socket
 import platform
@@ -18,22 +5,27 @@ import pywifi
 from pywifi import const, Profile
 import time
 
+
 def get_hostname():
     """Retrieve the current hostname of the device."""
     return socket.gethostname()
+
 
 def set_hostname(new_hostname):
     """Set a new hostname for the device."""
     try:
         os.system(f"sudo hostnamectl set-hostname {new_hostname}")
-        print(f"Hostname changed to {new_hostname}. Please restart for changes to take effect.")
+        print(f"Hostname changed to {
+              new_hostname}. Please restart for changes to take effect.")
     except Exception as e:
         print(f"Failed to change hostname: {e}")
+
 
 def get_ip_address():
     """Retrieve the IP address of the device."""
     hostname = socket.gethostname()
     return socket.gethostbyname(hostname)
+
 
 def connect_to_wifi(ssid, password):
     """Connect to a Wi-Fi network with the specified SSID and password."""
@@ -52,7 +44,7 @@ def connect_to_wifi(ssid, password):
         tmp_profile = iface.add_network_profile(profile)
         iface.connect(tmp_profile)
         print(f"Connecting to {ssid}...")
-        
+
         # Wait for connection
         for _ in range(10):
             if iface.status() == const.IFACE_CONNECTED:
@@ -64,6 +56,7 @@ def connect_to_wifi(ssid, password):
     else:
         print("Interface is already connected.")
         return True
+
 
 def get_unique_networks():
     wifi = pywifi.PyWiFi()
@@ -84,22 +77,22 @@ def get_unique_networks():
 
     return unique_networks
 
+def get_ssid_list(networks):
+    ssid_list = [network.ssid for network in networks]
+    return ssid_list
+
 def print_networks(networks):
     for network in networks:
         print(f"SSID: {network.ssid}, Signal: {network.signal}")
+
 
 # Usage examples
 if __name__ == "__main__":
     # Get current hostname and IP
     print("Current hostname:", get_hostname())
     print("Current IP address:", get_ip_address())
-    
-    # Set new hostname
-    # set_hostname("NewHostname")  # Uncomment and replace "NewHostname" to set a new hostname
-    
-    # List available Wi-Fi networks
     networks = get_unique_networks()
     print_networks(networks)
-    
-    # Connect to a Wi-Fi network
-    # connect_to_wifi("SSID_NAME", "password")  # Replace "SSID_NAME" and "password" with actual credentials
+    set_hostname('Christopher2')
+    # connect_to_wifi('iot-ict-lab24g','iot#labclass')
+

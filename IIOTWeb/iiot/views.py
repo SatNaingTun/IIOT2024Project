@@ -462,10 +462,15 @@ def editInputAddress(request, address_id):
 
 
 def pi_profile_view(request):
-
+    networks=PiProfile.get_unique_networks()
+    wifiNames=PiProfile.get_ssid_list(networks)
+    
+    print(wifiNames)
+    
     initial_data = {
-        'pi_name': PiProfile.gethostname(),
-        'pi_ip_address': PiProfile.getIPaddr()
+        'pi_name': PiProfile.get_hostname(),
+        'pi_ip_address': PiProfile.get_ip_address()
+       
     }
     form = PiInfoForm(initial=initial_data)
 
@@ -485,7 +490,7 @@ def pi_profile_view(request):
     #         return redirect(listDevices)  # Redirect to PLC view after deleting database
 
     # databases = InfluxDb.list_databases()  # List all databases
-    return render(request, 'iiot/form.html', {'myform': form})
+    return render(request, 'iiot/form.html', {'myform': form,'wifiNames':wifiNames})
 
 
 def influx_database_view(request):
