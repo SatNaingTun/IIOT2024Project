@@ -23,7 +23,16 @@ def set_hostname(new_hostname):
 
 def get_ip_address():
     """Retrieve the IP address of the device."""
-    hostname = socket.gethostname()
+    try:
+        s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8",80))
+        ip_address=s.getsockname()[0]
+        s.close()
+        return ip_address
+    except Exception as e:
+        print(f'Unable to get IP address:{e}')
+        return "Unavailable"
+
     return socket.gethostbyname(hostname)
 
 
@@ -58,27 +67,47 @@ def connect_to_wifi(ssid, password):
         return True
 
 
+# def get_unique_networks():
+#     wifi = pywifi.PyWiFi()
+#     iface = wifi.interfaces()[0]
+#     iface.scan()
+#     scan_results = iface.scan_results()
+
+#     # Use a dictionary to filter out duplicates
+#     networks = {}
+#     ssidList=[]
+#     for network in scan_results:
+#         networks[network.ssid] = network
+        
+
+#     # Convert dictionary back to a list
+#     unique_networks = list(networks.values())
+
+#     # Sort the list by signal strength (optional)
+#     unique_networks.sort(key=lambda x: x.signal, reverse=True)
+
+#     return unique_networks
+
+# def get_ssid_list(networks):
+#     ssid_list = [network.ssid for network in networks]
+#     return ssid_list
+
+
 def get_unique_networks():
     wifi = pywifi.PyWiFi()
     iface = wifi.interfaces()[0]
     iface.scan()
     scan_results = iface.scan_results()
 
-    # Use a dictionary to filter out duplicates
-    networks = {}
+    # Use a set to filter out duplicates
+    ssids = set()
     for network in scan_results:
-        networks[network.ssid] = network
+        ssids.add(network.ssid)
 
-    # Convert dictionary back to a list
-    unique_networks = list(networks.values())
-
-    # Sort the list by signal strength (optional)
-    unique_networks.sort(key=lambda x: x.signal, reverse=True)
-
-    return unique_networks
+    return list(ssids)
 
 def get_ssid_list(networks):
-    ssid_list = [network.ssid for network in networks]
+    ssid_list = [network for network in networks]
     return ssid_list
 
 def print_networks(networks):
@@ -91,8 +120,8 @@ if __name__ == "__main__":
     # Get current hostname and IP
     print("Current hostname:", get_hostname())
     print("Current IP address:", get_ip_address())
-    networks = get_unique_networks()
-    print_networks(networks)
-    set_hostname('Christopher2')
+    # networks = get_unique_ssids()
+    # print_networks(networks)
+    # set_hostname('Christopher2')
     # connect_to_wifi('iot-ict-lab24g','iot#labclass')
 

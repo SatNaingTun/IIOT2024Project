@@ -464,32 +464,35 @@ def editInputAddress(request, address_id):
 def pi_profile_view(request):
     networks=PiProfile.get_unique_networks()
     wifiNames=PiProfile.get_ssid_list(networks)
+    # wifiNames=PiProfile.get_ssid_list(networks)
     
     print(wifiNames)
     
     initial_data = {
         'pi_name': PiProfile.get_hostname(),
-        'pi_ip_address': PiProfile.get_ip_address()
+        'pi_ip_address': PiProfile.get_ip_address(),
+        
        
     }
-    form = PiInfoForm(initial=initial_data)
+    form = PiInfoForm(initial=initial_data,wifiNames=wifiNames)
+    # form=PiInfoForm()
+    if request.method == 'POST':
+        form = PiInfoForm(request.POST)
+        if form.is_valid():
+            # hostname=request.POST.get('pi_name')
+            # wifi_name=request.POST.get('wifi_name')
+            # wifi_password=request.POST.get('wifi_password')
+            hostname=form.cleaned_data['pi_name']
+            wifi_name=form.cleaned_data['wifi_name']
+            wifi_password=form.cleaned_data['wifi_password']
 
-    # if request.method == 'POST':
-    # if 'create' in request.POST:
-    #     form = PiInfoForm(request.POST)
-    # if form.is_valid():
-    #     db_name = form.cleaned_data['db_name']
-    #     InfluxDb.create_database(db_name)
-    #     messages.info(request,f"Influx database {db_name} is created")
-    #     return redirect(listDevices)  # Redirect to PLC view after creating database
-    # elif 'delete' in request.POST:
-    #     db_name = request.POST.get('database_name')
-    #     if db_name:
-    #         InfluxDb.delete_database(db_name)
-    #         messages.info(request,f"Influx database {db_name} is deleted")
-    #         return redirect(listDevices)  # Redirect to PLC view after deleting database
-
-    # databases = InfluxDb.list_databases()  # List all databases
+            PiProfile.set_hostname(hostname)
+            if wifi_name is not None and wifi_password is not None:
+                PiProfile.connect_to_wifi(wifi_name,wifi_password)
+            else:
+                form = PiInfoForm(initial=initial_data, wifi_choices=[(name, name) for name in wifiNames])
+        
+    
     return render(request, 'iiot/form.html', {'myform': form,'wifiNames':wifiNames})
 
 
