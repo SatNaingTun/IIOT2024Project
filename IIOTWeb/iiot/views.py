@@ -262,6 +262,22 @@ def removeInputDevice(request,device_id):
         messages.error(request,'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
 
+
+def removeInfluxDB(request,device_id):
+    try:
+        influxServer=InfluxDatabases.objects.get(device_id=device_id)
+        
+        if influxServer is None:
+            raise Exception
+        
+        influxServer.delete()
+        return redirect(listDevices)
+        
+    except Exception as e:
+        messages.error(request,'An error occurred while removing Mqtt Server')
+    return redirect(listDevices)
+
+
 def addInputAddress(request, device_id):
     # Attempt to fetch the input device; return 404 if not found
     inputDevice = InputDevices.objects.get(device_id=device_id)

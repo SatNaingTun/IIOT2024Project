@@ -16,6 +16,7 @@ urlpatterns = [
     path("", views.listDevices,name='ListDevices'),
     path("reg/mqtt/", views.registerMqtt,name='RegMqtt'),
     path("reg/influx/", views.addInfluxDB,name='RegInflux'),
+    path("del/influx/<uuid:device_id>/", views.removeInfluxDB,name='RemoveInflux'),
     path("list/influx/measurement/", views.listMeasurements,name='ListMeasurement'),
     path("edit/influx/measurement/<uuid:id>/", views.editMeasurement,name='EditMeasurement'),
     path("del/influx/measurement/<uuid:id>/", views.removeMeasurement,name='RemoveMeasurement'),
