@@ -5,11 +5,17 @@
 <!-- <div class="album py-5 bg-light"> -->
     <h1>List of Input addresses
         
-    </h1> 
+    </h1>
+    <div class="col-lg-6 col-md-8 mx-auto">
+        <form method="get">
+            {{inputAddressFilter.form|crispy}}
+            <button class="btn btn-sm btn-danger" type="submit">filter</button>
+        </form>
+    </div> 
     <div class="container"> 
         <div class="card overflow-auto" style="background-color: #f0f8ff; padding: 20px;">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"> 
-            {% for adr in inputAddresses %} 
+            {% for adr in inputAddressFilter.qs %} 
             <div class="col">
                 
                 {% include "components/listing_InputAddresses.html" %} 

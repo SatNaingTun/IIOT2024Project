@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-zkjseh5b)2&u2ck1=9wdr_00)-r!1-*503fn%s!c39cmc-3at(
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['192.168.1.102','localhost']
+ALLOWED_HOSTS = ['192.168.1.102','192.168.1.104','127.0.0.1','localhost']
 
 
 # Application definition
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
      'crispy_forms',
      'crispy_bootstrap5',
     'iiot',
+    'django_filters',
+    
 
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
