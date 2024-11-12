@@ -7,7 +7,7 @@ from .Controllers import S7PLCLogo, InfluxDb, PiProfile
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputDeviceForm, MqttServerForm, InfluxServerForm, InfluxMeasurementForm, PiInfoForm,PiWifiForm
+from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputDeviceForm, MqttServerForm, InfluxServerForm, InfluxMeasurementForm, PiInfoForm, PiWifiForm
 from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, InfluxMeasurement
 from .DataCollector import getCollect
 # from  .Views import InputDeviceView
@@ -301,8 +301,7 @@ def addInputAddress(request, device_id):
             inputAddress.save()
 
             # Show success message and redirect
-            messages.success(request, f'{inputAddress.variable_name} added successfully to {
-                             inputDevice.device_name}.')
+            messages.success(request, f'{inputAddress.variable_name} added successfully to {inputDevice.device_name}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect('ListInputAddress')
 
@@ -339,8 +338,7 @@ def addInfluxMeasurement(request):
             # influxMeasurement.save()
 
             # Show success message and redirect
-            messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {
-                             influxMeasurement.database}.')
+            messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {influxMeasurement.database}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect(listDevices)
 
@@ -379,8 +377,7 @@ def addInfluxDB(request):
             InfluxDb.create_database(influxServer.database)
 
             # Show success message and redirect
-            messages.success(request, f' {influxServer.device_name} save successfully to {
-                             influxServer.device_name}.')
+            messages.success(request, f' {influxServer.device_name} save successfully to {influxServer.device_name}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect(listDevices)
 
@@ -419,8 +416,7 @@ def editInfluxDB(request, device_id):
             # inputAddress.save()
 
             # Show success message and redirect
-            messages.success(request, f' {influxServer.device_name} updated successfully to {
-                             influxServer.device_name}.')
+            messages.success(request, f' {influxServer.device_name} updated successfully to {influxServer.device_name}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect(listDevices)
 
@@ -463,17 +459,17 @@ def editInputAddress(request, address_id):
 
 
 def pi_profile_view(request):
-    networks=PiProfile.get_unique_networks()
-    wifiNames=PiProfile.get_ssid_list(networks)
+    networks = PiProfile.get_unique_networks()
+    wifiNames = PiProfile.get_ssid_list(networks)
     # wifiNames=PiProfile.get_ssid_list(networks)
-    
+
     print(wifiNames)
-    
+
     initial_data = {
         'pi_name': PiProfile.get_hostname(),
         'pi_ip_address': PiProfile.get_ip_address(),
-        
-       
+
+
     }
     form = PiInfoForm(initial=initial_data)
     # form=PiInfoForm()
@@ -483,44 +479,79 @@ def pi_profile_view(request):
             # hostname=request.POST.get('pi_name')
             # wifi_name=request.POST.get('wifi_name')
             # wifi_password=request.POST.get('wifi_password')
-            hostname=form.cleaned_data['pi_name']
-            
+            hostname = form.cleaned_data['pi_name']
 
             PiProfile.set_hostname(hostname)
-           
+
             form = PiInfoForm(initial=initial_data)
-        
-    
+
     return render(request, 'iiot/form.html', {'myform': form})
 
 
-def pi_wifi_view(request):
-    networks=PiProfile.get_unique_networks()
-    wifiNames=PiProfile.get_ssid_list(networks)
-    # wifiNames=PiProfile.get_ssid_list(networks)
-    
-    print(wifiNames)
-    
-    form = PiWifiForm(wifiNames=wifiNames)
-    # form=PiInfoForm()
-    if request.method == 'POST':
-        form = PiWifiForm(request.POST)
-        if form.is_valid():
-            # hostname=request.POST.get('pi_name')
-            # wifi_name=request.POST.get('wifi_name')
-            # wifi_password=request.POST.get('wifi_password')
-           
-            wifi_name=form.cleaned_data['wifi_name']
-            wifi_password=form.cleaned_data['wifi_password']
+# def pi_wifi_view(request):
+#     networks = PiProfile.get_unique_networks()
+#     wifiNames = PiProfile.get_ssid_list(networks)
+#     # wifiNames=PiProfile.get_ssid_list(networks)
 
-           
-            if wifi_name is not None and wifi_password is not None:
-                PiProfile.connect_to_wifi(wifi_name,wifi_password)
-            else:
-                form = PiInfoForm( wifi_choices=[(name, name) for name in wifiNames])
-        
+#     print(wifiNames)
+
+#     form = PiWifiForm(wifiNames=wifiNames)
+#     # form=PiInfoForm()
+#     if request.method == 'POST':
+#         form = PiWifiForm(request.POST)
+#         if form.is_valid():
+#             # hostname=request.POST.get('pi_name')
+#             # wifi_name=request.POST.get('wifi_name')
+#             # wifi_password=request.POST.get('wifi_password')
+
+#             wifi_name = form.cleaned_data['wifi_name']
+#             wifi_password = form.cleaned_data['wifi_password']
+
+#             if wifi_name is not None and wifi_password is not None:
+#                 PiProfile.connect_to_wifi(wifi_name, wifi_password)
+#             else:
+#                 form = PiInfoForm(
+#                     wifi_choices=[(name, name) for name in wifiNames])
+
+#     return render(request, 'iiot/form.html', {'myform': form, 'wifiNames': wifiNames})
+
+
+# # Handle WiFi selection and connection for Pi
+# def pi_wifi_view(request):
+#     networks = PiProfile.get_unique_networks()
+#     wifiNames = PiProfile.get_ssid_list(networks)
+#     form = PiWifiForm(wifiNames=wifiNames)
+
+#     if request.method == 'POST':
+#         form = PiWifiForm(request.POST, wifiNames=wifiNames)
+#         if form.is_valid():
+#             wifi_name = form.cleaned_data['wifi_name']
+#             wifi_password = form.cleaned_data['wifi_password']
+#             PiProfile.connect_to_wifi(wifi_name, wifi_password)
+#             messages.success(request, "Connected to Wi-Fi successfully")
+#         else:
+#             messages.error(request, "Failed to connect to Wi-Fi")
+
+#     return render(request, 'iiot/form.html', {'myform': form})
+
+def pi_wifi_view(request):
+    networks = PiProfile.get_unique_networks()
+    wifiNames = PiProfile.get_ssid_list(networks)
     
-    return render(request, 'iiot/form.html', {'myform': form,'wifiNames':wifiNames})
+    if request.method == 'POST':
+        form = PiWifiForm(request.POST, wifiNames=wifiNames)
+        if form.is_valid():
+            wifi_name = form.cleaned_data['wifi_name']
+            wifi_password = form.cleaned_data['wifi_password']
+            PiProfile.connect_to_wifi(wifi_name, wifi_password)
+            messages.success(request, "Connected to Wi-Fi successfully")
+            return redirect('pi_wifi_view')  # Replace with actual success view
+        else:
+            messages.error(request, "Failed to connect to Wi-Fi")
+    else:
+        form = PiWifiForm(wifiNames=wifiNames)
+
+    return render(request, 'iiot/form.html', {'myform': form})
 
 
 def influx_database_view(request):
@@ -566,9 +597,8 @@ def create_measurement_view(request):
                 # Assuming create_measurement interacts with InfluxDB
                 InfluxDb.create_measurement(
                     database_name, measurement_name, field_name, field_value)
-                messages.success(request, f"Measurement '{measurement_name}' created in '{
-                                 database_name}' with field '{field_name}' = {field_value}")
-            except Exception as e:
+                messages.success(request, f"Measurement '{measurement_name}' created in '{database_name}' with field '{field_name}'={field_value}")
+            except Exception as e: 
                 messages.error(
                     request, f"Error creating measurement: {str(e)}")
             # Redirect to the same page after creation

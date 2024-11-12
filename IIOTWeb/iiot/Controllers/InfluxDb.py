@@ -5,7 +5,8 @@ from influxdb import InfluxDBClient
 import logging
 
 # InfluxDB client initialization
-INFLUXDB_HOST = '192.168.1.102'
+# INFLUXDB_HOST = '192.168.1.102'
+INFLUXDB_HOST = '192.168.1.104'
 INFLUXDB_PORT = 8086
 
 # json_payLoad=[]
@@ -23,7 +24,8 @@ INFLUXDB_PORT = 8086
 # }
 
 # client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT)
-def connectConnection(host='192.168.1.102',port=8086):
+# def connectConnection(host='192.168.1.102',port=8086):
+def connectConnection(host='192.168.1.104',port=8086):
     global client
     client = InfluxDBClient(host, port)
     return client
@@ -77,5 +79,6 @@ def get_list(database_name, measurement_name,query:str):
 
 if __name__=='__main__':
     connectConnection()
-    create_measurement('test5','tst_mes',field_value=5)
+    # create_measurement('test5','tst_mes',field_value=5)
+    create_measurement('gwiiot','tst_mes',field_value=5)
 

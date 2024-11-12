@@ -15,8 +15,7 @@ def set_hostname(new_hostname):
     """Set a new hostname for the device."""
     try:
         os.system(f"sudo hostnamectl set-hostname {new_hostname}")
-        print(f"Hostname changed to {
-              new_hostname}. Please restart for changes to take effect.")
+        print(f"Hostname changed to {new_hostname}. Please restart for changes to take effect.")
     except Exception as e:
         print(f"Failed to change hostname: {e}")
 
@@ -24,9 +23,9 @@ def set_hostname(new_hostname):
 def get_ip_address():
     """Retrieve the IP address of the device."""
     try:
-        s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8",80))
-        ip_address=s.getsockname()[0]
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip_address = s.getsockname()[0]
         s.close()
         return ip_address
     except Exception as e:
@@ -78,7 +77,7 @@ def connect_to_wifi(ssid, password):
 #     ssidList=[]
 #     for network in scan_results:
 #         networks[network.ssid] = network
-        
+
 
 #     # Convert dictionary back to a list
 #     unique_networks = list(networks.values())
@@ -106,9 +105,11 @@ def get_unique_networks():
 
     return list(ssids)
 
+
 def get_ssid_list(networks):
     ssid_list = [network for network in networks]
     return ssid_list
+
 
 def print_networks(networks):
     for network in networks:
@@ -124,4 +125,3 @@ if __name__ == "__main__":
     # print_networks(networks)
     # set_hostname('Christopher2')
     # connect_to_wifi('iot-ict-lab24g','iot#labclass')
-
