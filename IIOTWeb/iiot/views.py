@@ -10,7 +10,7 @@ from django.contrib import messages
 from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputDeviceForm, MqttServerForm, InfluxServerForm, InfluxMeasurementForm, PiInfoForm, PiWifiForm
 from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, InfluxMeasurement
 from .DataCollector import getCollect
-from .filters import InputAddressFilter
+from .filters import InputAddressFilter,InfluxMeasurementFilter
 # from  .Views import InputDeviceView
 
 
@@ -45,8 +45,10 @@ def listInputAddresses(request):
 
 def listMeasurements(request):
     influxMeasurements = InfluxMeasurement.objects.all()
+    influxMeasurementFilter=InfluxMeasurementFilter(request.GET,queryset=influxMeasurements)
     context = {
-        'influxMeasurements': influxMeasurements
+        # 'influxMeasurements': influxMeasurements,
+        'influxMeasurementFilter':influxMeasurementFilter
     }
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInfluxMeasurement.html", context)
