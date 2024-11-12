@@ -10,7 +10,7 @@ from django.contrib import messages
 from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputDeviceForm, MqttServerForm, InfluxServerForm, InfluxMeasurementForm, PiInfoForm, PiWifiForm
 from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, InfluxMeasurement
 from .DataCollector import getCollect
-from .filters import InputAddressFilter,InfluxMeasurementFilter
+from .filters import InputAddressFilter, InfluxMeasurementFilter
 # from  .Views import InputDeviceView
 
 
@@ -34,10 +34,11 @@ def listDevices(request):
 
 def listInputAddresses(request):
     inputAddresses = InputAddresses.objects.all()
-    inputAddressFilter=InputAddressFilter(request.GET,queryset=inputAddresses)
+    inputAddressFilter = InputAddressFilter(
+        request.GET, queryset=inputAddresses)
     context = {
         # 'inputAddresses': inputAddresses,
-        'inputAddressFilter':inputAddressFilter
+        'inputAddressFilter': inputAddressFilter
     }
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInputAddresses.html", context)
@@ -45,10 +46,11 @@ def listInputAddresses(request):
 
 def listMeasurements(request):
     influxMeasurements = InfluxMeasurement.objects.all()
-    influxMeasurementFilter=InfluxMeasurementFilter(request.GET,queryset=influxMeasurements)
+    influxMeasurementFilter = InfluxMeasurementFilter(
+        request.GET, queryset=influxMeasurements)
     context = {
         # 'influxMeasurements': influxMeasurements,
-        'influxMeasurementFilter':influxMeasurementFilter
+        'influxMeasurementFilter': influxMeasurementFilter
     }
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInfluxMeasurement.html", context)
@@ -289,9 +291,9 @@ def removeInfluxDB(request, device_id):
     return redirect(listDevices)
 
 
-def addInputAddress(request, device_id):
+def addInputAddress(request):
     # Attempt to fetch the input device; return 404 if not found
-    inputDevice = InputDevices.objects.get(device_id=device_id)
+    # inputDevice = InputDevices.objects.get(device_id=device_id)
 
     if request.method == 'POST':
         inputAddressForm = InputAddressForm(request.POST)
@@ -300,13 +302,14 @@ def addInputAddress(request, device_id):
             # Create a new InputAddress instance, but don't save it to the database yet
             inputAddress = inputAddressForm.save(commit=False)
             # Assign the device to the InputAddress instance
-            if inputDevice is not None:
-                inputAddress.device = inputDevice
+            # if inputDevice is not None:
+            #     inputAddress.device = inputDevice
             # Save the InputAddress to the database
             inputAddress.save()
 
             # Show success message and redirect
-            messages.success(request, f'{inputAddress.variable_name} added successfully to {inputDevice.device_name}.')
+            messages.success(request, f'{inputAddress.variable_name} added successfully to {
+                             inputAddress.device.device_name}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect('ListInputAddress')
 
@@ -321,7 +324,7 @@ def addInputAddress(request, device_id):
     # Render the form with context
     return render(request, 'iiot/editInputAddress.html', {
         'inputAddressForm': inputAddressForm,
-        'inputDevice': inputDevice
+        # 'inputDevice': inputDevice
     })
 
 
@@ -343,7 +346,8 @@ def addInfluxMeasurement(request):
             # influxMeasurement.save()
 
             # Show success message and redirect
-            messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {influxMeasurement.database}.')
+            messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {
+                             influxMeasurement.database}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect(listDevices)
 
@@ -382,7 +386,8 @@ def addInfluxDB(request):
             InfluxDb.create_database(influxServer.database)
 
             # Show success message and redirect
-            messages.success(request, f' {influxServer.device_name} save successfully to {influxServer.device_name}.')
+            messages.success(request, f' {influxServer.device_name} save successfully to {
+                             influxServer.device_name}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect(listDevices)
 
@@ -421,7 +426,8 @@ def editInfluxDB(request, device_id):
             # inputAddress.save()
 
             # Show success message and redirect
-            messages.success(request, f' {influxServer.device_name} updated successfully to {influxServer.device_name}.')
+            messages.success(request, f' {influxServer.device_name} updated successfully to {
+                             influxServer.device_name}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect(listDevices)
 
@@ -542,7 +548,7 @@ def pi_profile_view(request):
 def pi_wifi_view(request):
     networks = PiProfile.get_unique_networks()
     wifiNames = PiProfile.get_ssid_list(networks)
-    
+
     if request.method == 'POST':
         form = PiWifiForm(request.POST, wifiNames=wifiNames)
         if form.is_valid():
@@ -602,8 +608,9 @@ def create_measurement_view(request):
                 # Assuming create_measurement interacts with InfluxDB
                 InfluxDb.create_measurement(
                     database_name, measurement_name, field_name, field_value)
-                messages.success(request, f"Measurement '{measurement_name}' created in '{database_name}' with field '{field_name}'={field_value}")
-            except Exception as e: 
+                messages.success(request, f"Measurement '{measurement_name}' created in '{
+                                 database_name}' with field '{field_name}'={field_value}")
+            except Exception as e:
                 messages.error(
                     request, f"Error creating measurement: {str(e)}")
             # Redirect to the same page after creation

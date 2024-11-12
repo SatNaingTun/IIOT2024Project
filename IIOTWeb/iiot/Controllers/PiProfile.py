@@ -121,7 +121,7 @@ if __name__ == "__main__":
     # Get current hostname and IP
     print("Current hostname:", get_hostname())
     print("Current IP address:", get_ip_address())
-    # networks = get_unique_ssids()
+    networks = get_unique_networks()
     # print_networks(networks)
     # set_hostname('Christopher2')
     # connect_to_wifi('iot-ict-lab24g','iot#labclass')
