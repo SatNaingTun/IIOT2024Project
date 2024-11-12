@@ -1,0 +1,6 @@
+python3 -m pip install pywifi --break-system-packages
+python3 -m pip install django-crispy-forms --break-system-packages
+python3 -m pip install django-crispy-forms crispy-bootstrap5 --break-system-packages
+python3 -m pip install python-snap7 --break-system-packages
+python3 -m pip install pymodbus --break-system-packages
+python3 -m pip install influxdb-client --break-system-packages
