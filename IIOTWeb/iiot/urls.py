@@ -35,5 +35,6 @@ urlpatterns = [
     path("del/inputs/address/<uuid:address_id>/", views.removeInputAddress,name='RemoveInputAddress'),
     path("testrun/", views.testRun,name='TestRun'),
     path("server/info/", views.pi_profile_view,name='ServerInfo'),
+    path("server/wifi/", views.pi_wifi_view,name='ServerWifi'),
     
     ]

@@ -41,6 +41,11 @@ class InfluxDBForm(forms.Form):
 class PiInfoForm(forms.Form):
     pi_name=forms.CharField(label='Pi Name', max_length=20)
     pi_ip_address=forms.GenericIPAddressField(label='Pi Address',max_length=24)
+   
+    
+   
+
+class PiWifiForm(forms.Form):
     wifi_name = forms.ChoiceField(choices=[], label="Select Wifi")
     wifi_password=forms.CharField(label='Wifi Password', max_length=20)
     
@@ -49,6 +54,7 @@ class PiInfoForm(forms.Form):
         super().__init__(*args, **kwargs)
         # Dynamically set the choices for the database_name field
         self.fields['wifi_name'].choices = [(wifi, wifi) for wifi in wifiNames]
+
 
 class CreateMeasurementForm(forms.Form):
     database_name = forms.ChoiceField(choices=[], label="Select Database")  # Set choices dynamically

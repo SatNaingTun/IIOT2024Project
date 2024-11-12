@@ -7,9 +7,10 @@ from .Controllers import S7PLCLogo, InfluxDb, PiProfile
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputDeviceForm, MqttServerForm, InfluxServerForm, InfluxMeasurementForm, PiInfoForm
+from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputDeviceForm, MqttServerForm, InfluxServerForm, InfluxMeasurementForm, PiInfoForm,PiWifiForm
 from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, InfluxMeasurement
 from .DataCollector import getCollect
+# from  .Views import InputDeviceView
 
 
 # Create your views here.
@@ -474,7 +475,7 @@ def pi_profile_view(request):
         
        
     }
-    form = PiInfoForm(initial=initial_data,wifiNames=wifiNames)
+    form = PiInfoForm(initial=initial_data)
     # form=PiInfoForm()
     if request.method == 'POST':
         form = PiInfoForm(request.POST)
@@ -483,14 +484,40 @@ def pi_profile_view(request):
             # wifi_name=request.POST.get('wifi_name')
             # wifi_password=request.POST.get('wifi_password')
             hostname=form.cleaned_data['pi_name']
+            
+
+            PiProfile.set_hostname(hostname)
+           
+            form = PiInfoForm(initial=initial_data)
+        
+    
+    return render(request, 'iiot/form.html', {'myform': form})
+
+
+def pi_wifi_view(request):
+    networks=PiProfile.get_unique_networks()
+    wifiNames=PiProfile.get_ssid_list(networks)
+    # wifiNames=PiProfile.get_ssid_list(networks)
+    
+    print(wifiNames)
+    
+    form = PiWifiForm(wifiNames=wifiNames)
+    # form=PiInfoForm()
+    if request.method == 'POST':
+        form = PiWifiForm(request.POST)
+        if form.is_valid():
+            # hostname=request.POST.get('pi_name')
+            # wifi_name=request.POST.get('wifi_name')
+            # wifi_password=request.POST.get('wifi_password')
+           
             wifi_name=form.cleaned_data['wifi_name']
             wifi_password=form.cleaned_data['wifi_password']
 
-            PiProfile.set_hostname(hostname)
+           
             if wifi_name is not None and wifi_password is not None:
                 PiProfile.connect_to_wifi(wifi_name,wifi_password)
             else:
-                form = PiInfoForm(initial=initial_data, wifi_choices=[(name, name) for name in wifiNames])
+                form = PiInfoForm( wifi_choices=[(name, name) for name in wifiNames])
         
     
     return render(request, 'iiot/form.html', {'myform': form,'wifiNames':wifiNames})
