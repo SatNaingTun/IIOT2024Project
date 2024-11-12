@@ -1,7 +1,7 @@
 <div class="card shadow-sm mb-3" style="max-width: 18rem;"> 
     <div class="card-body"> 
         <h5 class="card-title">{{dev.device_name}}
-            <a href="{% url 'RemoveInflux'  device_id=dev.device_id %}" type="button" class="btn btn-sm btn-outline-secondary">Delete</a>
+            <a href="{% url 'RemoveInflux'  device_id=dev.device_id %}" type="button" class="btn btn-sm btn-danger">Delete</a>
         </h5> 
         <ul class="list-unstyled mb-3"> 
             <li>{{dev.device_id}}</li> 

@@ -2,29 +2,10 @@
 {% load crispy_forms_tags %}
 
 {% block 'body' %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-    <div class="collapse navbar-collapse" id="navbarToggler">
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'test'  %}">test PLC</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'ServerInfo'  %}">Pi Server Info</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'ServerInfo'  %}">Pi Server Info</a>
-      </li>
-    </ul>
-    </div>
-</div>
-</nav>
+
     <div>
     <h1>List of Input Devices 
-        <a href="{% url 'RegisterInput'  %}" type="button" class="btn btn-sm btn-outline-secondary">Register Input Device</a>
+        <a href="{% url 'RegisterInput'  %}" type="button" class="btn btn-sm btn-primary">Register Input Device</a>
     </h1>
     </div> 
     <div class="container"> 
@@ -41,7 +22,7 @@
     
 
     <div>
-        <h1>List of Mqtt Server <a href="{% url 'RegMqtt'  %}" type="button" class="btn btn-sm btn-outline-secondary">Register Mqtt Server</a>
+        <h1>List of Mqtt Server <a href="{% url 'RegMqtt'  %}" type="button" class="btn btn-sm btn-primary">Register Mqtt Server</a>
         </h1>
         </div>
     <div class="container"> 
@@ -58,7 +39,7 @@
     </div> 
 
     <div>
-        <h1>List of Influx Databases <a href="{% url 'RegInflux'  %}" type="button" class="btn btn-sm btn-outline-secondary">Register Influx Databases</a>
+        <h1>List of Influx Databases <a href="{% url 'RegInflux'  %}" type="button" class="btn btn-sm btn-primary">Register Influx Databases</a>
         </h1>
         </div>
     <div class="container"> 
