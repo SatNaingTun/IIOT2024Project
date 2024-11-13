@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 # from .Controllers import PlcAllInOne
 from .PlcProtocols import PlcProtocol
-from .Controllers import S7PLCLogo, InfluxDb, PiProfile
+from .Controllers import S7PLCLogo, InfluxDb
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
@@ -11,6 +11,11 @@ from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputD
 from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, InfluxMeasurement
 from .DataCollector import getCollect
 from .filters import InputAddressFilter, InfluxMeasurementFilter
+
+try:
+    from .Controllers import PiProfile
+except Exception as e:
+    print("PiProfile import error",e)
 # from  .Views import InputDeviceView
 
 
