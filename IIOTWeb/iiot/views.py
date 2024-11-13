@@ -336,16 +336,12 @@ def addInfluxMeasurement(request):
         influxMeasurementForm = InfluxMeasurementForm(request.POST)
 
         if influxMeasurementForm.is_valid():
-            # Create a new InputAddress instance, but don't save it to the database yet
+            
+            database= influxMeasurementForm.cleaned_data['database']
+            # if InfluxDb.connectConnection(database.device_name,database.port)
             influxMeasurement = influxMeasurementForm.save()
-            # Assign the device to the InputAddress instance
-            # if influxDatabase is not None:
-            #     influxDatabase.database = influxDatabase
 
-            # # Save the InputAddress to the database
-            # influxMeasurement.save()
 
-            # Show success message and redirect
             messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {
                              influxMeasurement.database}.')
             # Adjust this to the correct view name or path for listing devices
@@ -375,26 +371,29 @@ def addInfluxDB(request):
 
         if influxServerForm.is_valid():
             # Create a new InputAddress instance, but don't save it to the database yet
-            influxServer = influxServerForm.save()
-            # Assign the device to the InputAddress instance
-            # if inputDevice is not None:
-            #     inputAddress.device = inputDevice
-            # Save the InputAddress to the database
-            # inputAddress.save()
-            influxDb = InfluxDb.connectConnection(
+            try:
+               
+                
+                influxServer = influxServerForm.save()
+           
+                influxDb = InfluxDb.connectConnection(
                 influxServer.ip_address, influxServer.port)
-            InfluxDb.create_database(influxServer.database)
+                InfluxDb.create_database(influxServer.database)
 
             # Show success message and redirect
-            messages.success(request, f' {influxServer.device_name} save successfully to {
+                messages.success(request, f' {influxServer.device_name} save successfully to {
                              influxServer.device_name}.')
-            # Adjust this to the correct view name or path for listing devices
-            return redirect(listDevices)
+           
+                return redirect(listDevices)
+            except:
+                messages.error(request,'Failed to create Influxdb name. Please check the connection to Influx')
+
+
 
         else:
             # If the form is invalid, show an error message
             messages.error(
-                request, 'Failed to save Input Address. Please check the form data.')
+                request, f'Failed to save Influx Database. Please check the form data.')
     else:
         # If GET request, initialize an empty form
         influxServerForm = InfluxServerForm()
@@ -434,7 +433,7 @@ def editInfluxDB(request, device_id):
         else:
             # If the form is invalid, show an error message
             messages.error(
-                request, 'Failed to save Input Address. Please check the form data.')
+                request, 'Failed to update Influx Database. Please check the form data.')
     else:
         # If GET request, initialize an empty form
         influxServerForm = InfluxServerForm(instance=influxServer)

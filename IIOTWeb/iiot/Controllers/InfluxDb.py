@@ -28,6 +28,7 @@ INFLUXDB_PORT = 8086
 def connectConnection(host='192.168.1.104',port=8086):
     global client
     client = InfluxDBClient(host, port)
+
     return client
 
 

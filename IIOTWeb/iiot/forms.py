@@ -116,8 +116,8 @@ class InfluxDBForm(forms.Form):
 
 # Form for Pi information, including hostname and IP address
 class PiInfoForm(forms.Form):
-    pi_name = forms.CharField(label='Pi Name', max_length=20)
-    pi_ip_address = forms.GenericIPAddressField(label='Pi Address', max_length=24)
+    pi_name = forms.CharField(label='Machine Name', max_length=20)
+    pi_ip_address = forms.GenericIPAddressField(label='Machine Address', max_length=24)
     # pi_password=forms.CharField(label='Pi Password', max_length=20, widget=forms.PasswordInput)
 
 
