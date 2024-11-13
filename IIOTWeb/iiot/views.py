@@ -42,7 +42,7 @@ def login_view(request):
         login_form=AuthenticationForm()
     return render(request,'iiot/login.html',{'myform':login_form})
 
-
+@login_required
 def logout_view(request):
     logout(request)
     return redirect(listDevices)

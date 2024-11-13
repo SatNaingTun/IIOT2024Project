@@ -13,7 +13,7 @@ urlpatterns = [
     # path("testLocal/", views.testLocal,name='testLocal'),
     path("reg/inputs/", views.registerInputDevice,name='RegisterInput'),
     # path("mqtt/", views.mqtt_view,name='Mqtt'),
-    path("", views.listDevices,name='ListDevices'),
+    path("list/devices/", views.listDevices,name='ListDevices'),
     path("reg/mqtt/", views.registerMqtt,name='RegMqtt'),
     
     path("reg/influx/", views.addInfluxDB,name='RegInflux'),
@@ -41,7 +41,7 @@ urlpatterns = [
     path("server/info/", views.pi_profile_view,name='ServerInfo'),
     path("server/wifi/", views.pi_wifi_view,name='ServerWifi'),
     path('server/wifi/', views.pi_wifi_view, name='pi_wifi_view'),
-    path('login/', views.login_view, name='Login'),
+    path('', views.login_view, name='Login'),
     path('logout/', views.login_view, name='Logout'),
 
     ]
