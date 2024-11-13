@@ -13,7 +13,7 @@ from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, 
 from .DataCollector import getCollect
 from .filters import InputAddressFilter, InfluxMeasurementFilter
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 
 try:
@@ -41,6 +41,11 @@ def login_view(request):
     elif request.method=='GET':
         login_form=AuthenticationForm()
     return render(request,'iiot/login.html',{'myform':login_form})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect(listDevices)
                 
 
 @login_required
