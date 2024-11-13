@@ -139,3 +139,6 @@ MESSAGE_TAGS={
     messages.ERROR:'danger',
     
 }
+
+LOGIN_URL='/login/'
+LOGIN_REDIRECT_URL='/ListDevices/'

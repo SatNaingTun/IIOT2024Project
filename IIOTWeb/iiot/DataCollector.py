@@ -33,13 +33,15 @@ def getCollect():
                         InfluxDb.create_measurement(
                             influxMeasurement.database.database, influxMeasurement.measurement_name, field_value=result)
                 adr.save(update_fields=['data'])
-        dataDict[inputDevice.device_name] = dataDict2
+        if len(dataDict2)>0:
+            dataDict[inputDevice.device_name] = dataDict2
 
-    for mqttServer in mqttServers:
-        client = MyMqtt.connect_mqtt(
+    if dataDict2 is not None and len(dataDict2)>0:
+        for mqttServer in mqttServers:
+            client = MyMqtt.connect_mqtt(
             mqttServer.ip_address, mqttServer.port, mqttServer.mqtt_user_name, mqttServer.mqtt_password)
-        client.publish(mqttServer.topic, str(dataDict))
-        client.disconnect()
+            client.publish(mqttServer.topic, str(dataDict))
+            client.disconnect()
         # json.dumps(myDict)
     # print(dataDict)
     return dataDict

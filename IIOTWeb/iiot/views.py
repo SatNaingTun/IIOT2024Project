@@ -13,6 +13,8 @@ from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, 
 from .DataCollector import getCollect
 from .filters import InputAddressFilter, InfluxMeasurementFilter
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate,login
+from django.contrib.auth.decorators import login_required
 
 try:
     from .Controllers import PiProfile
@@ -24,7 +26,24 @@ except Exception as e:
 # Create your views here.
 plc_data = []
 
+def login_view(request):
+    if request.method=='POST':
+        login_form=AuthenticationForm(request=request,data=request.POST)
+        if login_form.is_valid():
+            username=login_form.cleaned_data.get('username')
+            password=login_form.cleaned_data.get('password')
+            user=authenticate(username=username,password=password)
+            if user is not None:
+                login(request,user)
+                return redirect(listDevices)
+            else:
+                pass
+    elif request.method=='GET':
+        login_form=AuthenticationForm()
+    return render(request,'iiot/login.html',{'myform':login_form})
+                
 
+@login_required
 def listDevices(request):
     inputDevices = InputDevices.objects.all()
     mqttServers = MqttServers.objects.all()
@@ -38,7 +57,7 @@ def listDevices(request):
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listDevices.html", context)
 
-
+@login_required
 def listInputAddresses(request):
     inputAddresses = InputAddresses.objects.all()
     inputAddressFilter = InputAddressFilter(
@@ -50,7 +69,7 @@ def listInputAddresses(request):
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInputAddresses.html", context)
 
-
+@login_required
 def listMeasurements(request):
     influxMeasurements = InfluxMeasurement.objects.all()
     influxMeasurementFilter = InfluxMeasurementFilter(
@@ -62,7 +81,7 @@ def listMeasurements(request):
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInfluxMeasurement.html", context)
 
-
+@login_required
 def test(request):
     plc_data = []
     if request.method == 'GET':
@@ -119,7 +138,7 @@ def testLocal(request):
         # print(plc_data.get('variable_name'))
         return render(request, "iiot/test.html", {'plc_data': plc_data})
 
-
+@login_required
 def registerInputDevice(request):
 
     if request.method == 'POST':
@@ -139,7 +158,7 @@ def registerInputDevice(request):
         inputDeviceForm = InputDeviceForm()
         return render(request, 'iiot/registerInputDevice.html', {"inputDeviceForm": inputDeviceForm})
 
-
+@login_required
 def registerMqtt(request):
 
     if request.method == 'POST':
@@ -159,7 +178,7 @@ def registerMqtt(request):
         mqttServerForm = MqttServerForm()
         return render(request, 'iiot/registerMqtt.html', {"mqttServerForm": mqttServerForm})
 
-
+@login_required
 def editInputDevice(request, device_id):
     try:
         inputDevice = InputDevices.objects.get(device_id=device_id)
@@ -180,7 +199,7 @@ def editInputDevice(request, device_id):
         messages.error(request, 'An error occurred while editing InputDevice')
     return redirect(listDevices)
 
-
+@login_required
 def editMeasurement(request, id):
     try:
         influxMeasurement = InfluxMeasurement.objects.get(id=id)
@@ -202,7 +221,7 @@ def editMeasurement(request, id):
         messages.error(request, 'An error occurred while editing InputDevice')
     return redirect(listDevices)
 
-
+@login_required
 def editMqtt(request, id):
     try:
         mqttServer = MqttServers.objects.get(id=id)
@@ -222,7 +241,7 @@ def editMqtt(request, id):
         messages.error(request, 'An error occurred while editing Mqtt Server')
     return redirect(listDevices)
 
-
+@login_required
 def removeMqtt(request, id):
     try:
         mqttServer = MqttServers.objects.get(id=id)
@@ -237,7 +256,7 @@ def removeMqtt(request, id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
 
-
+@login_required
 def removeMeasurement(request, id):
     try:
         influxMeasurement = InfluxMeasurement.objects.get(id=id)
@@ -252,7 +271,7 @@ def removeMeasurement(request, id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listMeasurements)
 
-
+@login_required
 def removeInputAddress(request, address_id):
     try:
         inputAddress = InputAddresses.objects.get(address_id=address_id)
@@ -267,7 +286,7 @@ def removeInputAddress(request, address_id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listInputAddresses)
 
-
+@login_required
 def removeInputDevice(request, device_id):
     try:
         inputDevice = InputDevices.objects.get(device_id=device_id)
@@ -282,7 +301,7 @@ def removeInputDevice(request, device_id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
 
-
+@login_required
 def removeInfluxDB(request, device_id):
     try:
         influxServer = InfluxDatabases.objects.get(device_id=device_id)
@@ -297,7 +316,7 @@ def removeInfluxDB(request, device_id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
 
-
+@login_required
 def addInputAddress(request):
     # Attempt to fetch the input device; return 404 if not found
     # inputDevice = InputDevices.objects.get(device_id=device_id)
@@ -334,7 +353,7 @@ def addInputAddress(request):
         # 'inputDevice': inputDevice
     })
 
-
+@login_required
 def addInfluxMeasurement(request):
     # Attempt to fetch the input device; return 404 if not found
     # influxDatabase = InfluxDatabases.objects.get(device_id=device_id)
@@ -367,7 +386,7 @@ def addInfluxMeasurement(request):
 
     })
 
-
+@login_required
 def addInfluxDB(request):
     # Attempt to fetch the input device; return 404 if not found
     # inputDevice = InputDevices.objects.get(device_id=device_id)
@@ -413,7 +432,7 @@ def addInfluxDB(request):
             # 'inputDevice': inputDevice
         })
 
-
+@login_required
 def editInfluxDB(request, device_id):
     # Attempt to fetch the input device; return 404 if not found
     influxServer = InfluxDatabases.objects.get(device_id=device_id)
@@ -457,7 +476,7 @@ def editInfluxDB(request, device_id):
         # 'inputDevice': inputDevice
     })
 
-
+@login_required
 def editInputAddress(request, address_id):
     # Attempt to fetch the input device; return 404 if not found
     try:
@@ -480,7 +499,7 @@ def editInputAddress(request, address_id):
         messages.error(request, 'An error occurred while editing InputDevice')
         return redirect(listInputAddresses)
 
-
+@login_required
 def pi_profile_view(request):
     networks = PiProfile.get_unique_networks()
     wifiNames = PiProfile.get_ssid_list(networks)
@@ -510,7 +529,7 @@ def pi_profile_view(request):
 
     return render(request, 'iiot/form.html', {'myform': form})
 
-
+@login_required
 def pi_wifi_view(request):
     networks = PiProfile.get_unique_networks()
     wifiNames = PiProfile.get_ssid_list(networks)
@@ -530,7 +549,7 @@ def pi_wifi_view(request):
 
     return render(request, 'iiot/form.html', {'myform': form})
 
-
+@login_required
 def influx_database_view(request):
     """View to handle database creation, deletion, and listing."""
     form = InfluxDBForm()  # Instantiate the form
@@ -555,7 +574,7 @@ def influx_database_view(request):
     databases = InfluxDb.list_databases()  # List all databases
     return render(request, 'iiot/influx_database.html', {'form': form, 'databases': databases})
 
-
+@login_required
 def create_measurement_view(request):
     # Fetch the list of databases created from InfluxDB
     InfluxDb.connectConnection()
