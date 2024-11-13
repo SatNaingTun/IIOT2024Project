@@ -1,7 +1,7 @@
 import datetime
 from django.shortcuts import redirect, render
 # from ..forms import InfluxDBForm
-from influxdb import InfluxDBClient
+from influxdb import InfluxDBClient,exceptions
 import logging
 
 # InfluxDB client initialization
@@ -25,9 +25,15 @@ INFLUXDB_PORT = 8086
 
 # client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT)
 # def connectConnection(host='192.168.1.102',port=8086):
-def connectConnection(host='192.168.1.104',port=8086):
+def connectConnection(host='192.168.1.102',port=8086):
     global client
     client = InfluxDBClient(host, port)
+    try:
+        # Attempt to ping the server to verify connection
+        client.ping()
+    except exceptions.InfluxDBClientError as e:
+        # Raise an error if connection is unsuccessful
+        raise ConnectionError("Failed to connect to InfluxDB server.")
 
     return client
 

@@ -33,7 +33,7 @@ def getCollect():
                         InfluxDb.create_measurement(
                             influxMeasurement.database.database, influxMeasurement.measurement_name, field_value=result)
                 adr.save(update_fields=['data'])
-        dataDict[inputDevice] = dataDict2
+        dataDict[inputDevice.device_name] = dataDict2
 
     for mqttServer in mqttServers:
         client = MyMqtt.connect_mqtt(

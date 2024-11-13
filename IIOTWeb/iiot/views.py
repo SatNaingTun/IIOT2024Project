@@ -373,45 +373,36 @@ def addInfluxDB(request):
 
     if request.method == 'POST':
         influxServerForm = InfluxServerForm(request.POST)
-
         if influxServerForm.is_valid():
-            # Create a new InputAddress instance, but don't save it to the database yet
             try:
-               
-                
+                # Attempt to connect to InfluxDB server
                 influxServer = influxServerForm.save()
-           
-                influxDb = InfluxDb.connectConnection(
-                influxServer.ip_address, influxServer.port)
+                influxDb = InfluxDb.connectConnection(influxServer.ip_address, influxServer.port)
+                
+                # Create the database
                 InfluxDb.create_database(influxServer.database)
 
-                db_name=influxServerForm.cleaned_data['database']
-                duration= influxServerForm.cleaned_data['duration']
-                if duration is not None and duration!="":
-                    InfluxDb.createRetentionPolicy(db_name=db_name,duration=duration)
+                db_name = influxServerForm.cleaned_data['database']
+                duration = influxServerForm.cleaned_data['duration']
+                if duration:
+                    InfluxDb.createRetentionPolicy(db_name=db_name, duration=duration)
 
-            # Show success message and redirect
-                messages.success(request, f' {influxServer.device_name} save successfully to {
-                             influxServer.device_name}.')
-           
+                # Success message
+                messages.success(request, f'{influxServer.device_name} saved successfully to {influxServer.device_name}.')
                 return redirect(listDevices)
-            except:
-                messages.error(request,'Failed to create Influxdb name. Please check the connection to Influx')
 
-
-
+            except ConnectionError:
+                messages.error(request, 'Failed to connect to InfluxDB server. Please check if the server is running and try again.')
+            except Exception:
+                messages.error(request, 'Failed to create InfluxDB. Please check the connection and form data.')
         else:
-            # If the form is invalid, show an error message
-            messages.error(
-                request, f'Failed to save Influx Database. Please check the form data.')
+            messages.error(request, 'Failed to save Influx Database. Please check the form data.')
+
     else:
-        # If GET request, initialize an empty form
         influxServerForm = InfluxServerForm()
 
-    # Render the form with context
     return render(request, 'iiot/form.html', {
         'myform': influxServerForm,
-        # 'inputDevice': inputDevice
     })
 
 
