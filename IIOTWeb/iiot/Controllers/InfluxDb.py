@@ -41,6 +41,13 @@ def create_database(db_name):
     client.create_database(db_name)
     logger.info("Database created: %s", db_name)
 
+def createRetentionPolicy(db_name,duration):
+    client.create_retention_policy(name=db_name,database=db_name,duration=duration)
+
+def alterRetentionPolicy(db_name,duration):
+    client.alter_retention_policy(name=db_name,database=db_name,duration=duration)
+    
+
 
 def create_measurement(name):
     """Create a new table in InfluxDB."""

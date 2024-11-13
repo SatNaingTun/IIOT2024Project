@@ -47,6 +47,7 @@ class InfluxDatabases(models.Model):
     ip_address=models.GenericIPAddressField(max_length=24)
     port=models.IntegerField()
     database=models.CharField(max_length=24)
+    duration=models.CharField(max_length=24,default='4w')
     # user_name=models.CharField(max_length=24)
     # password=models.CharField(max_length=24)
 

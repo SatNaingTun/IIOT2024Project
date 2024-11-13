@@ -385,6 +385,11 @@ def addInfluxDB(request):
                 influxServer.ip_address, influxServer.port)
                 InfluxDb.create_database(influxServer.database)
 
+                db_name=influxServerForm.cleaned_data['database']
+                duration= influxServerForm.cleaned_data['duration']
+                if duration is not None and duration!="":
+                    InfluxDb.createRetentionPolicy(db_name=db_name,duration=duration)
+
             # Show success message and redirect
                 messages.success(request, f' {influxServer.device_name} save successfully to {
                              influxServer.device_name}.')
@@ -415,7 +420,7 @@ def editInfluxDB(request, device_id):
     influxServer = InfluxDatabases.objects.get(device_id=device_id)
 
     if request.method == 'POST':
-        influxServerForm = InfluxServerForm(request.POST)
+        influxServerForm = InfluxServerForm(request.POST,instance=influxServer)
 
         if influxServerForm.is_valid():
             # Create a new InputAddress instance, but don't save it to the database yet
@@ -423,6 +428,11 @@ def editInfluxDB(request, device_id):
             influxDb = InfluxDb.connectConnection(
                 influxServer.ip_address, influxServer.port)
             InfluxDb.create_database(influxServer.database)
+            
+            db_name=influxServerForm.cleaned_data['database']
+            duration= influxServerForm.cleaned_data['duration']
+            if duration is not None and duration!="":
+                InfluxDb.createRetentionPolicy(db_name=db_name,duration=duration)
             # Assign the device to the InputAddress instance
             # if inputDevice is not None:
             #     inputAddress.device = inputDevice
