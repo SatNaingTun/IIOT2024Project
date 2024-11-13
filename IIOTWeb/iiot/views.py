@@ -1,3 +1,4 @@
+# view.py
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
@@ -11,11 +12,12 @@ from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputD
 from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, InfluxMeasurement
 from .DataCollector import getCollect
 from .filters import InputAddressFilter, InfluxMeasurementFilter
+from django.contrib.auth.forms import AuthenticationForm
 
 try:
     from .Controllers import PiProfile
 except Exception as e:
-    print("PiProfile import error",e)
+    print("PiProfile import error", e)
 # from  .Views import InputDeviceView
 
 
@@ -341,11 +343,10 @@ def addInfluxMeasurement(request):
         influxMeasurementForm = InfluxMeasurementForm(request.POST)
 
         if influxMeasurementForm.is_valid():
-            
-            database= influxMeasurementForm.cleaned_data['database']
+
+            database = influxMeasurementForm.cleaned_data['database']
             # if InfluxDb.connectConnection(database.device_name,database.port)
             influxMeasurement = influxMeasurementForm.save()
-
 
             messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {
                              influxMeasurement.database}.')
@@ -373,37 +374,44 @@ def addInfluxDB(request):
 
     if request.method == 'POST':
         influxServerForm = InfluxServerForm(request.POST)
+
         if influxServerForm.is_valid():
+            # Create a new InputAddress instance, but don't save it to the database yet
+            influxServer = influxServerForm.save()
             try:
-                # Attempt to connect to InfluxDB server
-                influxServer = influxServerForm.save()
-                influxDb = InfluxDb.connectConnection(influxServer.ip_address, influxServer.port)
+
                 
-                # Create the database
+
+                InfluxDb.connectConnection(
+                    influxServer.ip_address, influxServer.port)
                 InfluxDb.create_database(influxServer.database)
 
                 db_name = influxServerForm.cleaned_data['database']
                 duration = influxServerForm.cleaned_data['duration']
-                if duration:
-                    InfluxDb.createRetentionPolicy(db_name=db_name, duration=duration)
+                databases = InfluxDb.list_databases()
+                if duration is not None and duration != "" and databases is not None:
+                    InfluxDb.createRetentionPolicy(
+                        db_name=db_name, duration=duration)
 
-                # Success message
-                messages.success(request, f'{influxServer.device_name} saved successfully to {influxServer.device_name}.')
+            # Show success message and redirect
+                messages.success(request, f' {influxServer.device_name} save successfully to {
+                    influxServer.device_name}.')
+
                 return redirect(listDevices)
-
-            except ConnectionError:
-                messages.error(request, 'Failed to connect to InfluxDB server. Please check if the server is running and try again.')
-            except Exception:
-                messages.error(request, 'Failed to create InfluxDB. Please check the connection and form data.')
-        else:
-            messages.error(request, 'Failed to save Influx Database. Please check the form data.')
-
+            except:
+                messages.error(
+                    request, 'Failed to create Influxdb name. Please check the connection to Influx')
+                influxServer.delete()
+                return redirect(listDevices)
     else:
+        # If GET request, initialize an empty form
         influxServerForm = InfluxServerForm()
 
-    return render(request, 'iiot/form.html', {
-        'myform': influxServerForm,
-    })
+    # Render the form with context
+        return render(request, 'iiot/form.html', {
+            'myform': influxServerForm,
+            # 'inputDevice': inputDevice
+        })
 
 
 def editInfluxDB(request, device_id):
@@ -411,30 +419,29 @@ def editInfluxDB(request, device_id):
     influxServer = InfluxDatabases.objects.get(device_id=device_id)
 
     if request.method == 'POST':
-        influxServerForm = InfluxServerForm(request.POST,instance=influxServer)
+        influxServerForm = InfluxServerForm(
+            request.POST, instance=influxServer)
 
         if influxServerForm.is_valid():
-            # Create a new InputAddress instance, but don't save it to the database yet
-            influxServer = influxServerForm.save()
-            influxDb = InfluxDb.connectConnection(
-                influxServer.ip_address, influxServer.port)
-            InfluxDb.create_database(influxServer.database)
-            
-            db_name=influxServerForm.cleaned_data['database']
-            duration= influxServerForm.cleaned_data['duration']
-            if duration is not None and duration!="":
-                InfluxDb.createRetentionPolicy(db_name=db_name,duration=duration)
-            # Assign the device to the InputAddress instance
-            # if inputDevice is not None:
-            #     inputAddress.device = inputDevice
-            # Save the InputAddress to the database
-            # inputAddress.save()
+            try:
+                influxServer = influxServerForm.save()
+                influxDb = InfluxDb.connectConnection(
+                    influxServer.ip_address, influxServer.port)
+                InfluxDb.create_database(influxServer.database)
 
-            # Show success message and redirect
-            messages.success(request, f' {influxServer.device_name} updated successfully to {
-                             influxServer.device_name}.')
+                db_name = influxServerForm.cleaned_data['database']
+                duration = influxServerForm.cleaned_data['duration']
+                databases = InfluxDb.list_databases()
+                if duration is not None and duration != "" and databases is not None:
+                    InfluxDb.createRetentionPolicy(
+                        db_name=db_name, duration=duration)
+
+                messages.success(request, f' {influxServer.device_name} updated successfully to {
+                    influxServer.device_name}.')
             # Adjust this to the correct view name or path for listing devices
-            return redirect(listDevices)
+                return redirect(listDevices)
+            except:
+                messages.error(request, 'Failed to update Influx Database')
 
         else:
             # If the form is invalid, show an error message
@@ -503,52 +510,6 @@ def pi_profile_view(request):
 
     return render(request, 'iiot/form.html', {'myform': form})
 
-
-# def pi_wifi_view(request):
-#     networks = PiProfile.get_unique_networks()
-#     wifiNames = PiProfile.get_ssid_list(networks)
-#     # wifiNames=PiProfile.get_ssid_list(networks)
-
-#     print(wifiNames)
-
-#     form = PiWifiForm(wifiNames=wifiNames)
-#     # form=PiInfoForm()
-#     if request.method == 'POST':
-#         form = PiWifiForm(request.POST)
-#         if form.is_valid():
-#             # hostname=request.POST.get('pi_name')
-#             # wifi_name=request.POST.get('wifi_name')
-#             # wifi_password=request.POST.get('wifi_password')
-
-#             wifi_name = form.cleaned_data['wifi_name']
-#             wifi_password = form.cleaned_data['wifi_password']
-
-#             if wifi_name is not None and wifi_password is not None:
-#                 PiProfile.connect_to_wifi(wifi_name, wifi_password)
-#             else:
-#                 form = PiInfoForm(
-#                     wifi_choices=[(name, name) for name in wifiNames])
-
-#     return render(request, 'iiot/form.html', {'myform': form, 'wifiNames': wifiNames})
-
-
-# # Handle WiFi selection and connection for Pi
-# def pi_wifi_view(request):
-#     networks = PiProfile.get_unique_networks()
-#     wifiNames = PiProfile.get_ssid_list(networks)
-#     form = PiWifiForm(wifiNames=wifiNames)
-
-#     if request.method == 'POST':
-#         form = PiWifiForm(request.POST, wifiNames=wifiNames)
-#         if form.is_valid():
-#             wifi_name = form.cleaned_data['wifi_name']
-#             wifi_password = form.cleaned_data['wifi_password']
-#             PiProfile.connect_to_wifi(wifi_name, wifi_password)
-#             messages.success(request, "Connected to Wi-Fi successfully")
-#         else:
-#             messages.error(request, "Failed to connect to Wi-Fi")
-
-#     return render(request, 'iiot/form.html', {'myform': form})
 
 def pi_wifi_view(request):
     networks = PiProfile.get_unique_networks()

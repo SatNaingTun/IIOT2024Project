@@ -27,7 +27,7 @@ INFLUXDB_PORT = 8086
 # def connectConnection(host='192.168.1.102',port=8086):
 def connectConnection(host='192.168.1.102',port=8086):
     global client
-    client = InfluxDBClient(host, port)
+    client = InfluxDBClient(host, port,timeout=5)
     try:
         # Attempt to ping the server to verify connection
         client.ping()
