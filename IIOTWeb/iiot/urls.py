@@ -42,6 +42,6 @@ urlpatterns = [
     path("server/wifi/", views.pi_wifi_view,name='ServerWifi'),
     path('server/wifi/', views.pi_wifi_view, name='pi_wifi_view'),
     path('', views.login_view, name='Login'),
-    path('logout/', views.login_view, name='Logout'),
+    path('logout/', views.logout_view, name='Logout'),
 
     ]
