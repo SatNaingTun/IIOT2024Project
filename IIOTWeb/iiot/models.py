@@ -68,8 +68,5 @@ class InfluxMeasurement(models.Model):
     data = models.ForeignKey(InputAddresses, on_delete=models.CASCADE)
     database = models.ForeignKey(InfluxDatabases, on_delete=models.CASCADE)
 
-    # user_name=models.CharField(max_length=24)
-    # password=models.CharField(max_length=24)
-
     def __str__(self):
         return self.measurement_name

@@ -31,7 +31,7 @@ class MqttServerForm(forms.ModelForm):
 class InfluxServerForm(forms.ModelForm):
     class Meta:
         model = InfluxDatabases
-        fields = {'device_name', 'ip_address', 'port', 'database','duration'}
+        fields = {'device_name', 'ip_address', 'port', 'database', 'duration'}
 
 
 # Model form for Influx Measurements
@@ -49,7 +49,8 @@ class InfluxDBForm(forms.Form):
 # Form for Pi information, including hostname and IP address
 class PiInfoForm(forms.Form):
     pi_name = forms.CharField(label='Machine Name', max_length=20)
-    pi_ip_address = forms.GenericIPAddressField(label='Machine Address', max_length=24)
+    pi_ip_address = forms.GenericIPAddressField(
+        label='Machine Address', max_length=24)
     # pi_password=forms.CharField(label='Pi Password', max_length=20, widget=forms.PasswordInput)
 
 
@@ -68,13 +69,16 @@ class PiInfoForm(forms.Form):
 
 class PiWifiForm(forms.Form):
     wifi_name = forms.ChoiceField(choices=[], label="Select Wifi")
-    wifi_password = forms.CharField(label='Wifi Password', max_length=20, widget=forms.PasswordInput)
+    wifi_password = forms.CharField(
+        label='Wifi Password', max_length=20, widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
-        wifi_names = kwargs.pop('wifiNames', [])  # Use 'pop' to retrieve 'wifiNames' from kwargs
+        # Use 'pop' to retrieve 'wifiNames' from kwargs
+        wifi_names = kwargs.pop('wifiNames', [])
         super(PiWifiForm, self).__init__(*args, **kwargs)
         # Dynamically set the choices for the wifi_name field
-        self.fields['wifi_name'].choices = [(wifi, wifi) for wifi in wifi_names]
+        self.fields['wifi_name'].choices = [
+            (wifi, wifi) for wifi in wifi_names]
 
 
 # Form to create a measurement in a selected Influx Database

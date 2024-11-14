@@ -3,7 +3,6 @@ from .models import InputDevices, InputAddresses, MqttServers, InfluxMeasurement
 from .PlcProtocols import PlcProtocol
 from .PlcProtocols import S7PLCLogo
 from .Controllers import RepeatedTimer, MyMqtt, InfluxDb
-
 import json
 
 
@@ -11,11 +10,8 @@ import json
 
 def getCollect():
     dataDict = {}
-    # dataDict[Topic]=data
-    # print(dataDict)
     inputDevices = InputDevices.objects.all()
     mqttServers = MqttServers.objects.all()
-    # influxDb = InfluxDb.connectConnection()
 
     for inputDevice in inputDevices:
         dataDict2 = {}
@@ -44,15 +40,11 @@ def getCollect():
                 mqttServer.ip_address, mqttServer.port, mqttServer.mqtt_user_name, mqttServer.mqtt_password)
             client.publish(mqttServer.topic, str(dataDict))
             client.disconnect()
-        # json.dumps(myDict)
-    # print(dataDict)
     return dataDict
 
 
 def getCollectByInputDevice(device_id):
     dataDict = {}
-    # dataDict[Topic]=data
-    # print(dataDict)
 
     mqttServers = MqttServers.objects.all()
     inputDevice = InputDevices.objects.get(device_id=device_id)
@@ -70,7 +62,6 @@ def getCollectByInputDevice(device_id):
         client = MyMqtt.connect_mqtt(
             mqttServer.ip_address, mqttServer.port, mqttServer.mqtt_user_name, mqttServer.mqtt_password)
         client.publish(mqttServer.topic, json.dumps(dataDict))
-    # print(dataDict)
     return dataDict
 
 

@@ -15,10 +15,10 @@ port = 1883
 # Generate a Client ID with the publish prefix.
 client_id = f'publish-{random.randint(0, 1000)}'
 # username = 'pi'
-# username='pi'
 # password = 'pi'
 
-def connect_mqtt(mqtt_ip,port,username,password):
+
+def connect_mqtt(mqtt_ip, port, username, password):
     """Connect to the MQTT broker and handle connection errors."""
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
@@ -37,24 +37,17 @@ def connect_mqtt(mqtt_ip,port,username,password):
     return client
 
 
-def publish(client,data,topic):
+def publish(client, data, topic):
     # msg_count = 1
     # while True:
-        time.sleep(1)
-        # msg = f"messages: {msg_count}"
-        result = client.publish(topic, data)
-        # result: [0, 1]
-        status = result[0]
-        # if status == 0:
-        #     print(f"Send `{msg}` to topic `{topic}`")
-        # else:
-        #     print(f"Failed to send message to topic {topic}")
-        # msg_count += 1
-        # if msg_count > 5:
-        #     break
+    time.sleep(1)
+    # msg = f"messages: {msg_count}"
+    result = client.publish(topic, data)
+    # result: [0, 1]
+    status = result[0]
 
 
-def subscribe(client: mqtt_client,topic):
+def subscribe(client: mqtt_client, topic):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 
@@ -65,12 +58,8 @@ def subscribe(client: mqtt_client,topic):
 def run(data):
     client = connect_mqtt()
     client.loop_start()
-    publish(client,data)
+    publish(client, data)
     client.loop_stop()
-
-    # subscribe(client)
-    # client.loop_forever()
-    
 
 
 if __name__ == '__main__':

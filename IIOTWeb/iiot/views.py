@@ -5,7 +5,6 @@ from django.contrib import messages
 # from .Controllers import PlcAllInOne
 from .PlcProtocols import PlcProtocol
 from .Controllers import S7PLCLogo, InfluxDb
-
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputDeviceForm, MqttServerForm, InfluxServerForm, InfluxMeasurementForm, PiInfoForm, PiWifiForm
@@ -61,7 +60,6 @@ def listDevices(request):
         'mqttServers': mqttServers,
         'influxDatabases': influxDatabases
     }
-    # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listDevices.html", context)
 
 
@@ -71,10 +69,8 @@ def listInputAddresses(request):
     inputAddressFilter = InputAddressFilter(
         request.GET, queryset=inputAddresses)
     context = {
-        # 'inputAddresses': inputAddresses,
         'inputAddressFilter': inputAddressFilter
     }
-    # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInputAddresses.html", context)
 
 
@@ -84,10 +80,8 @@ def listMeasurements(request):
     influxMeasurementFilter = InfluxMeasurementFilter(
         request.GET, queryset=influxMeasurements)
     context = {
-        # 'influxMeasurements': influxMeasurements,
         'influxMeasurementFilter': influxMeasurementFilter
     }
-    # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInfluxMeasurement.html", context)
 
 
@@ -97,11 +91,8 @@ def test(request):
     if request.method == 'GET':
         return render(request, "iiot/test.html")
     elif request.method == 'POST':
-        # form = PLCAddressForm(request.POST)
         var_name = request.POST.get('variable_name')
-        # print(var_name)
         AddressMemory = request.POST.get('AddressMemory')
-        # print(AddressMemory)
         ip = request.POST.get('IPAddressPLC')
         port = request.POST.get('PlcPort')
         protocol_name = request.POST.get('PlcProtocol')
@@ -110,23 +101,12 @@ def test(request):
         print(protocol_name)
         result = PlcProtocol.getData(
             protocol_name, AddressMemory, ip, int(port), rack, slot)
-
         if result is not None:
             plc_data.append({'address': AddressMemory,
                             'data': result, 'variable_name': var_name})
         else:
             messages.error(request, "Check Your Connection")
         return render(request, "iiot/test.html", {'plc_data': plc_data})
-
-        # if S7PLCLogo.connectConnection()==True:
-        #         data=S7PLCLogo.readData(AddressMemory)
-        #         plc_data.update({'address': AddressMemory, 'data': data, 'variable_name': var_name})
-        #         print(plc_data)
-        # else:
-        #         messages.error(request,"Connection Error")
-        # return render(request,"iiot/test.html",{'form':form,'plc_data': plc_data})
-        # messages.info(request,'You clicked the submit button')
-        # return redirect(test)
 
 
 def testLocal(request):
@@ -135,17 +115,12 @@ def testLocal(request):
     if request.method == 'GET':
         return render(request, "iiot/test.html")
     elif request.method == 'POST':
-        # PlcAllInOne.getData(protocol_name)
         var_name = request.POST.get('variable_name')
-        # print(var_name)
         AddressMemory = request.POST.get('AddressMemory')
 
         protocol_name = request.POST.get('PlcProtocol')
-        # print(protocol_name)
         plc_data.append({'address': AddressMemory, 'data': 5,
                         'variable_name': var_name})
-        # print(plc_data)
-        # print(plc_data.get('variable_name'))
         return render(request, "iiot/test.html", {'plc_data': plc_data})
 
 
@@ -348,12 +323,7 @@ def addInputAddress(request):
         if inputAddressForm.is_valid():
             # Create a new InputAddress instance, but don't save it to the database yet
             inputAddress = inputAddressForm.save(commit=False)
-            # Assign the device to the InputAddress instance
-            # if inputDevice is not None:
-            #     inputAddress.device = inputDevice
-            # Save the InputAddress to the database
             inputAddress.save()
-
             # Show success message and redirect
             messages.success(
                 request, f'{inputAddress.variable_name} added successfully to {inputAddress.device.device_name}.')
@@ -371,7 +341,6 @@ def addInputAddress(request):
     # Render the form with context
     return render(request, 'iiot/editInputAddress.html', {
         'inputAddressForm': inputAddressForm,
-        # 'inputDevice': inputDevice
     })
 
 
@@ -386,7 +355,6 @@ def addInfluxMeasurement(request):
         if influxMeasurementForm.is_valid():
 
             database = influxMeasurementForm.cleaned_data['database']
-            # if InfluxDb.connectConnection(database.device_name,database.port)
             influxMeasurement = influxMeasurementForm.save()
 
             messages.success(
@@ -411,8 +379,6 @@ def addInfluxMeasurement(request):
 
 @login_required
 def addInfluxDB(request):
-    # Attempt to fetch the input device; return 404 if not found
-    # inputDevice = InputDevices.objects.get(device_id=device_id)
 
     if request.method == 'POST':
         influxServerForm = InfluxServerForm(request.POST)
@@ -527,7 +493,6 @@ def editInputAddress(request, address_id):
 def pi_profile_view(request):
     networks = PiProfile.get_unique_networks()
     wifiNames = PiProfile.get_ssid_list(networks)
-    # wifiNames=PiProfile.get_ssid_list(networks)
 
     print(wifiNames)
 
@@ -538,13 +503,9 @@ def pi_profile_view(request):
 
     }
     form = PiInfoForm(initial=initial_data)
-    # form=PiInfoForm()
     if request.method == 'POST':
         form = PiInfoForm(request.POST)
         if form.is_valid():
-            # hostname=request.POST.get('pi_name')
-            # wifi_name=request.POST.get('wifi_name')
-            # wifi_password=request.POST.get('wifi_password')
             hostname = form.cleaned_data['pi_name']
 
             PiProfile.set_hostname(hostname)

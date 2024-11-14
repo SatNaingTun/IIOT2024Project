@@ -10,22 +10,7 @@ import logging
 INFLUXDB_HOST = '192.168.1.104'
 INFLUXDB_PORT = 8086
 
-# json_payLoad=[]
-# data={
-#     "measurement":"stocks",
-#     "tags":{
-#         "ticker":"TSLA"
-#     },
-#     "time":datetime.now(),
-#     "fields":{
-#         "open":688.37,
-#         "close":667.93
-
-#     }
-# }
-
-# client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT)
-# def connectConnection(host='192.168.1.102',port=8086):
+# def connectConnection(host='192.168.1.104',port=8086):
 
 
 def connectConnection(host='192.168.1.102', port=8086):
