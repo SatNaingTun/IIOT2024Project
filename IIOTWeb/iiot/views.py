@@ -13,7 +13,7 @@ from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, 
 from .DataCollector import getCollect
 from .filters import InputAddressFilter, InfluxMeasurementFilter
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 try:
@@ -26,27 +26,29 @@ except Exception as e:
 # Create your views here.
 plc_data = []
 
+
 def login_view(request):
-    if request.method=='POST':
-        login_form=AuthenticationForm(request=request,data=request.POST)
+    if request.method == 'POST':
+        login_form = AuthenticationForm(request=request, data=request.POST)
         if login_form.is_valid():
-            username=login_form.cleaned_data.get('username')
-            password=login_form.cleaned_data.get('password')
-            user=authenticate(username=username,password=password)
+            username = login_form.cleaned_data.get('username')
+            password = login_form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
             if user is not None:
-                login(request,user)
+                login(request, user)
                 return redirect(listDevices)
             else:
                 pass
-    elif request.method=='GET':
-        login_form=AuthenticationForm()
-    return render(request,'iiot/login.html',{'myform':login_form})
+    elif request.method == 'GET':
+        login_form = AuthenticationForm()
+    return render(request, 'iiot/login.html', {'myform': login_form})
+
 
 @login_required
 def logout_view(request):
     logout(request)
     return redirect(login_view)
-                
+
 
 @login_required
 def listDevices(request):
@@ -62,6 +64,7 @@ def listDevices(request):
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listDevices.html", context)
 
+
 @login_required
 def listInputAddresses(request):
     inputAddresses = InputAddresses.objects.all()
@@ -74,6 +77,7 @@ def listInputAddresses(request):
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInputAddresses.html", context)
 
+
 @login_required
 def listMeasurements(request):
     influxMeasurements = InfluxMeasurement.objects.all()
@@ -85,6 +89,7 @@ def listMeasurements(request):
     }
     # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInfluxMeasurement.html", context)
+
 
 @login_required
 def test(request):
@@ -143,6 +148,7 @@ def testLocal(request):
         # print(plc_data.get('variable_name'))
         return render(request, "iiot/test.html", {'plc_data': plc_data})
 
+
 @login_required
 def registerInputDevice(request):
 
@@ -162,6 +168,7 @@ def registerInputDevice(request):
     elif request.method == 'GET':
         inputDeviceForm = InputDeviceForm()
         return render(request, 'iiot/registerInputDevice.html', {"inputDeviceForm": inputDeviceForm})
+
 
 @login_required
 def registerMqtt(request):
@@ -183,6 +190,7 @@ def registerMqtt(request):
         mqttServerForm = MqttServerForm()
         return render(request, 'iiot/registerMqtt.html', {"mqttServerForm": mqttServerForm})
 
+
 @login_required
 def editInputDevice(request, device_id):
     try:
@@ -203,6 +211,7 @@ def editInputDevice(request, device_id):
     except Exception as e:
         messages.error(request, 'An error occurred while editing InputDevice')
     return redirect(listDevices)
+
 
 @login_required
 def editMeasurement(request, id):
@@ -226,6 +235,7 @@ def editMeasurement(request, id):
         messages.error(request, 'An error occurred while editing InputDevice')
     return redirect(listDevices)
 
+
 @login_required
 def editMqtt(request, id):
     try:
@@ -246,6 +256,7 @@ def editMqtt(request, id):
         messages.error(request, 'An error occurred while editing Mqtt Server')
     return redirect(listDevices)
 
+
 @login_required
 def removeMqtt(request, id):
     try:
@@ -260,6 +271,7 @@ def removeMqtt(request, id):
     except Exception as e:
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
+
 
 @login_required
 def removeMeasurement(request, id):
@@ -276,6 +288,7 @@ def removeMeasurement(request, id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listMeasurements)
 
+
 @login_required
 def removeInputAddress(request, address_id):
     try:
@@ -290,6 +303,7 @@ def removeInputAddress(request, address_id):
     except Exception as e:
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listInputAddresses)
+
 
 @login_required
 def removeInputDevice(request, device_id):
@@ -306,6 +320,7 @@ def removeInputDevice(request, device_id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
 
+
 @login_required
 def removeInfluxDB(request, device_id):
     try:
@@ -320,6 +335,7 @@ def removeInfluxDB(request, device_id):
     except Exception as e:
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
+
 
 @login_required
 def addInputAddress(request):
@@ -339,8 +355,8 @@ def addInputAddress(request):
             inputAddress.save()
 
             # Show success message and redirect
-            messages.success(request, f'{inputAddress.variable_name} added successfully to {
-                             inputAddress.device.device_name}.')
+            messages.success(
+                request, f'{inputAddress.variable_name} added successfully to {inputAddress.device.device_name}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect('ListInputAddress')
 
@@ -358,6 +374,7 @@ def addInputAddress(request):
         # 'inputDevice': inputDevice
     })
 
+
 @login_required
 def addInfluxMeasurement(request):
     # Attempt to fetch the input device; return 404 if not found
@@ -372,8 +389,8 @@ def addInfluxMeasurement(request):
             # if InfluxDb.connectConnection(database.device_name,database.port)
             influxMeasurement = influxMeasurementForm.save()
 
-            messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {
-                             influxMeasurement.database}.')
+            messages.success(
+                request, f'{influxMeasurement.measurement_name} added successfully to {influxMeasurement.database}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect(listDevices)
 
@@ -391,6 +408,7 @@ def addInfluxMeasurement(request):
 
     })
 
+
 @login_required
 def addInfluxDB(request):
     # Attempt to fetch the input device; return 404 if not found
@@ -404,8 +422,6 @@ def addInfluxDB(request):
             influxServer = influxServerForm.save()
             try:
 
-                
-
                 InfluxDb.connectConnection(
                     influxServer.ip_address, influxServer.port)
                 InfluxDb.create_database(influxServer.database)
@@ -418,8 +434,8 @@ def addInfluxDB(request):
                         db_name=db_name, duration=duration)
 
             # Show success message and redirect
-                messages.success(request, f' {influxServer.device_name} save successfully to {
-                    influxServer.device_name}.')
+                messages.success(
+                    request, f' {influxServer.device_name} save successfully to {influxServer.device_name}.')
 
                 return redirect(listDevices)
             except:
@@ -436,6 +452,7 @@ def addInfluxDB(request):
             'myform': influxServerForm,
             # 'inputDevice': inputDevice
         })
+
 
 @login_required
 def editInfluxDB(request, device_id):
@@ -460,8 +477,8 @@ def editInfluxDB(request, device_id):
                     InfluxDb.createRetentionPolicy(
                         db_name=db_name, duration=duration)
 
-                messages.success(request, f' {influxServer.device_name} updated successfully to {
-                    influxServer.device_name}.')
+                messages.success(
+                    request, f' {influxServer.device_name} updated successfully to {influxServer.device_name}.')
             # Adjust this to the correct view name or path for listing devices
                 return redirect(listDevices)
             except:
@@ -480,6 +497,7 @@ def editInfluxDB(request, device_id):
         'myform': influxServerForm,
         # 'inputDevice': inputDevice
     })
+
 
 @login_required
 def editInputAddress(request, address_id):
@@ -503,6 +521,7 @@ def editInputAddress(request, address_id):
     except Exception as e:
         messages.error(request, 'An error occurred while editing InputDevice')
         return redirect(listInputAddresses)
+
 
 @login_required
 def pi_profile_view(request):
@@ -534,6 +553,7 @@ def pi_profile_view(request):
 
     return render(request, 'iiot/form.html', {'myform': form})
 
+
 @login_required
 def pi_wifi_view(request):
     networks = PiProfile.get_unique_networks()
@@ -553,6 +573,7 @@ def pi_wifi_view(request):
         form = PiWifiForm(wifiNames=wifiNames)
 
     return render(request, 'iiot/form.html', {'myform': form})
+
 
 @login_required
 def influx_database_view(request):
@@ -579,6 +600,7 @@ def influx_database_view(request):
     databases = InfluxDb.list_databases()  # List all databases
     return render(request, 'iiot/influx_database.html', {'form': form, 'databases': databases})
 
+
 @login_required
 def create_measurement_view(request):
     # Fetch the list of databases created from InfluxDB
@@ -598,8 +620,8 @@ def create_measurement_view(request):
                 # Assuming create_measurement interacts with InfluxDB
                 InfluxDb.create_measurement(
                     database_name, measurement_name, field_name, field_value)
-                messages.success(request, f"Measurement '{measurement_name}' created in '{
-                                 database_name}' with field '{field_name}'={field_value}")
+                messages.success(
+                    request, f"Measurement '{measurement_name}' created in '{database_name}' with field '{field_name}'={field_value}")
             except Exception as e:
                 messages.error(
                     request, f"Error creating measurement: {str(e)}")

@@ -1,3 +1,4 @@
+# DataCollector.py
 from .models import InputDevices, InputAddresses, MqttServers, InfluxMeasurement
 from .PlcProtocols import PlcProtocol
 from .PlcProtocols import S7PLCLogo
@@ -29,17 +30,18 @@ def getCollect():
                 influxMeasurements = InfluxMeasurement.objects.filter(data=adr)
                 for influxMeasurement in influxMeasurements:
                     if influxMeasurement is not None:
-                        influxDb = InfluxDb.connectConnection(influxMeasurement.database.ip_address,influxMeasurement.database.port)
+                        influxDb = InfluxDb.connectConnection(
+                            influxMeasurement.database.ip_address, influxMeasurement.database.port)
                         InfluxDb.create_measurement(
                             influxMeasurement.database.database, influxMeasurement.measurement_name, field_value=result)
                 adr.save(update_fields=['data'])
-        if len(dataDict2)>0:
+        if len(dataDict2) > 0:
             dataDict[inputDevice.device_name] = dataDict2
 
-    if dataDict2 is not None and len(dataDict2)>0:
+    if dataDict2 is not None and len(dataDict2) > 0:
         for mqttServer in mqttServers:
             client = MyMqtt.connect_mqtt(
-            mqttServer.ip_address, mqttServer.port, mqttServer.mqtt_user_name, mqttServer.mqtt_password)
+                mqttServer.ip_address, mqttServer.port, mqttServer.mqtt_user_name, mqttServer.mqtt_password)
             client.publish(mqttServer.topic, str(dataDict))
             client.disconnect()
         # json.dumps(myDict)
@@ -65,17 +67,11 @@ def getCollectByInputDevice(device_id):
         adr.save(update_fields=['data'])
 
     for mqttServer in mqttServers:
-        client = MyMqtt.connect_mqtt(mqttServer.ip_address, mqttServer.port, mqttServer.mqtt_user_name, mqttServer.mqtt_password)
-        client.publish(mqttServer.topic,json.dumps(dataDict))
+        client = MyMqtt.connect_mqtt(
+            mqttServer.ip_address, mqttServer.port, mqttServer.mqtt_user_name, mqttServer.mqtt_password)
+        client.publish(mqttServer.topic, json.dumps(dataDict))
     # print(dataDict)
     return dataDict
-
-# def ask2Stop():
-#     try:
-#         input("Press Enter to stop the repeating timer...\n")
-#     finally:
-#         rt.stop()
-#     print("Timer stopped.")
 
 
 def getCollectBySchedule(interval):

@@ -1,3 +1,4 @@
+# PiProfile.py
 import os
 import socket
 import platform
@@ -15,7 +16,8 @@ def set_hostname(new_hostname):
     """Set a new hostname for the device."""
     try:
         os.system(f"sudo hostnamectl set-hostname {new_hostname}")
-        print(f"Hostname changed to {new_hostname}. Please restart for changes to take effect.")
+        print(
+            f"Hostname changed to {new_hostname}. Please restart for changes to take effect.")
     except Exception as e:
         print(f"Failed to change hostname: {e}")
 
@@ -123,5 +125,5 @@ if __name__ == "__main__":
     print("Current IP address:", get_ip_address())
     networks = get_unique_networks()
     # print_networks(networks)
-    # set_hostname('Christopher2')
+    # set_hostname('versionNew')
     # connect_to_wifi('iot-ict-lab24g','iot#labclass')
