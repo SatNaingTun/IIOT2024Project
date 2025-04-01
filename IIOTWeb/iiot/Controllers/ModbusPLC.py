@@ -19,11 +19,9 @@ coil_address = 1
 num_to_read = 1
 
 
-<<<<<<< HEAD
+
 def connectConnection(host='192.168.200.2',port=504):
-=======
-def connectConnection(host='192.168.200.2', port=102):
->>>>>>> 3f647505b91d51de9bb7e2aa4e37c0c34afbcf27
+
     global client
     client = ModbusTcpClient(host=host, port=port)
     connected = client.connect()
