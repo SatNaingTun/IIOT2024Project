@@ -1,3 +1,4 @@
+# PiProfile.py
 import os
 import socket
 import platform
@@ -15,7 +16,8 @@ def set_hostname(new_hostname):
     """Set a new hostname for the device."""
     try:
         os.system(f"sudo hostnamectl set-hostname {new_hostname}")
-        print(f"Hostname changed to {new_hostname}. Please restart for changes to take effect.")
+        print(
+            f"Hostname changed to {new_hostname}. Please restart for changes to take effect.")
     except Exception as e:
         print(f"Failed to change hostname: {e}")
 
@@ -66,32 +68,6 @@ def connect_to_wifi(ssid, password):
         return True
 
 
-# def get_unique_networks():
-#     wifi = pywifi.PyWiFi()
-#     iface = wifi.interfaces()[0]
-#     iface.scan()
-#     scan_results = iface.scan_results()
-
-#     # Use a dictionary to filter out duplicates
-#     networks = {}
-#     ssidList=[]
-#     for network in scan_results:
-#         networks[network.ssid] = network
-
-
-#     # Convert dictionary back to a list
-#     unique_networks = list(networks.values())
-
-#     # Sort the list by signal strength (optional)
-#     unique_networks.sort(key=lambda x: x.signal, reverse=True)
-
-#     return unique_networks
-
-# def get_ssid_list(networks):
-#     ssid_list = [network.ssid for network in networks]
-#     return ssid_list
-
-
 def get_unique_networks():
     wifi = pywifi.PyWiFi()
     iface = wifi.interfaces()[0]
@@ -122,6 +98,3 @@ if __name__ == "__main__":
     print("Current hostname:", get_hostname())
     print("Current IP address:", get_ip_address())
     networks = get_unique_networks()
-    # print_networks(networks)
-    # set_hostname('Christopher2')
-    # connect_to_wifi('iot-ict-lab24g','iot#labclass')

@@ -1,8 +1,10 @@
+# s7PLCLogo.py
 import snap7
 import logging
 
-logging.basicConfig(level=logging.INFO) 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def connectConnection(address='192.168.200.2', tsap=0x0100, tsaplogo=0x0100, Port=102):
     global plc
@@ -15,28 +17,33 @@ def connectConnection(address='192.168.200.2', tsap=0x0100, tsaplogo=0x0100, Por
         logger.error("Failed to connect to PLC: %s", str(e))
         return False
 
+
 def contains_substring(string, substrings):
     for substring in substrings:
         if substring in string:
             return substring
     return False
 
+
 def datatype2BitNumber(dataTypeName):
-    dataTypeBits = {'X': 1,'BOOL':1, 'BYTE': 8, 'WORD': 16, 'INT': 16, 'DWORD': 32, 'REAL': 32, 'CHAR': 8, 'STRING': 254}
+    dataTypeBits = {'X': 1, 'BOOL': 1, 'BYTE': 8, 'WORD': 16,
+                    'INT': 16, 'DWORD': 32, 'REAL': 32, 'CHAR': 8, 'STRING': 254}
     return dataTypeBits.get(dataTypeName, None)
+
 
 def string2Address(Address):
     commaIndex = Address.find(',')
     db_number = Address[2:commaIndex]
     typeNo = Address[commaIndex+1:]
-    dataTypes = ['BOOL', 'BYTE', 'DWORD', 'INT', 'WORD', 'REAL', 'CHAR', 'STRING','X']
+    dataTypes = ['BOOL', 'BYTE', 'DWORD', 'INT',
+                 'WORD', 'REAL', 'CHAR', 'STRING', 'X']
     dataType = contains_substring(typeNo, dataTypes)
     if dataType is None:
         logger.error("Invalid data type in address: %s", Address)
         return None
     dotIndex = typeNo.find('.')
-    print("DotIndex",dotIndex)
-    if dotIndex<0:
+    print("DotIndex", dotIndex)
+    if dotIndex < 0:
         addressNumber = typeNo[len(dataType):]
         # print("My address Number1 is",addressNumber)
         lengthData = datatype2BitNumber(dataType)
@@ -46,15 +53,17 @@ def string2Address(Address):
         lengthData = datatype2BitNumber(dataType)
     return (db_number, dataType, addressNumber, lengthData)
 
+
 def readData(Address):
     parsedAddress = string2Address(Address)
     if not parsedAddress:
         return None
     dbNumber, dataType, addressNumber, lengthData = parsedAddress
     try:
-        DB_bytearray = plc.db_read(int(dbNumber), int(addressNumber), int(lengthData))
+        DB_bytearray = plc.db_read(
+            int(dbNumber), int(addressNumber), int(lengthData))
         data = None
-        if dataType == "BOOL" or dataType=="X":
+        if dataType == "BOOL" or dataType == "X":
             data = snap7.util.get_bool(DB_bytearray, 0, int(addressNumber))
         elif dataType == "DWORD":
             data = snap7.util.get_dword(DB_bytearray, 0)
@@ -68,34 +77,35 @@ def readData(Address):
             data = snap7.util.get_char(DB_bytearray, 0)
         elif dataType == "STRING":
             data = snap7.util.get_string(DB_bytearray, 0)
-        
+
         logger.info("Read data from PLC: %s", data)
         return data
     except Exception as e:
         logger.error("Error reading data: %s", str(e))
         return None
 
+
 def askCommand():
     if connectConnection():
         while True:
-            user_address = input("Enter the PLC address to read (e.g., DB1,WORD1122) or 'exit' to quit: ")
+            user_address = input(
+                "Enter the PLC address to read (e.g., DB1,WORD1122) or 'exit' to quit: ")
             if user_address.lower() == 'exit':
                 break
             # readData(user_address)
-            readDataWithTopic(user_address,"Input 1")
+            readDataWithTopic(user_address, "Input 1")
             # string2Address(user_address)
     else:
         logger.error("Could not establish connection to the PLC.")
 
 
-
-def readDataWithTopic(Address,Topic):
-    data=readData(Address)
-    dataDict={}
-    dataDict[Topic]=data
+def readDataWithTopic(Address, Topic):
+    data = readData(Address)
+    dataDict = {}
+    dataDict[Topic] = data
     print(dataDict)
     return dataDict
 
 
 if __name__ == '__main__':
-   askCommand()
+    askCommand()

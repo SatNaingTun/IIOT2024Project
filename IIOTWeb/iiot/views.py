@@ -5,7 +5,6 @@ from django.contrib import messages
 # from .Controllers import PlcAllInOne
 from .PlcProtocols import PlcProtocol
 from .Controllers import S7PLCLogo, InfluxDb
-
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from .forms import CreateMeasurementForm, InfluxDBForm, InputAddressForm, InputDeviceForm, MqttServerForm, InfluxServerForm, InfluxMeasurementForm, PiInfoForm, PiWifiForm
@@ -13,7 +12,7 @@ from .models import InputDevices, InputAddresses, MqttServers, InfluxDatabases, 
 from .DataCollector import getCollect
 from .filters import InputAddressFilter, InfluxMeasurementFilter
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 try:
@@ -26,27 +25,29 @@ except Exception as e:
 # Create your views here.
 plc_data = []
 
+
 def login_view(request):
-    if request.method=='POST':
-        login_form=AuthenticationForm(request=request,data=request.POST)
+    if request.method == 'POST':
+        login_form = AuthenticationForm(request=request, data=request.POST)
         if login_form.is_valid():
-            username=login_form.cleaned_data.get('username')
-            password=login_form.cleaned_data.get('password')
-            user=authenticate(username=username,password=password)
+            username = login_form.cleaned_data.get('username')
+            password = login_form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
             if user is not None:
-                login(request,user)
+                login(request, user)
                 return redirect(listDevices)
             else:
                 pass
-    elif request.method=='GET':
-        login_form=AuthenticationForm()
-    return render(request,'iiot/login.html',{'myform':login_form})
+    elif request.method == 'GET':
+        login_form = AuthenticationForm()
+    return render(request, 'iiot/login.html', {'myform': login_form})
+
 
 @login_required
 def logout_view(request):
     logout(request)
     return redirect(login_view)
-                
+
 
 @login_required
 def listDevices(request):
@@ -59,8 +60,8 @@ def listDevices(request):
         'mqttServers': mqttServers,
         'influxDatabases': influxDatabases
     }
-    # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listDevices.html", context)
+
 
 @login_required
 def listInputAddresses(request):
@@ -68,11 +69,10 @@ def listInputAddresses(request):
     inputAddressFilter = InputAddressFilter(
         request.GET, queryset=inputAddresses)
     context = {
-        # 'inputAddresses': inputAddresses,
         'inputAddressFilter': inputAddressFilter
     }
-    # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInputAddresses.html", context)
+
 
 @login_required
 def listMeasurements(request):
@@ -80,11 +80,10 @@ def listMeasurements(request):
     influxMeasurementFilter = InfluxMeasurementFilter(
         request.GET, queryset=influxMeasurements)
     context = {
-        # 'influxMeasurements': influxMeasurements,
         'influxMeasurementFilter': influxMeasurementFilter
     }
-    # return HttpResponse("Hello, world. You're at the polls index.")
     return render(request, "iiot/listInfluxMeasurement.html", context)
+
 
 @login_required
 def test(request):
@@ -92,11 +91,8 @@ def test(request):
     if request.method == 'GET':
         return render(request, "iiot/test.html")
     elif request.method == 'POST':
-        # form = PLCAddressForm(request.POST)
         var_name = request.POST.get('variable_name')
-        # print(var_name)
         AddressMemory = request.POST.get('AddressMemory')
-        # print(AddressMemory)
         ip = request.POST.get('IPAddressPLC')
         port = request.POST.get('PlcPort')
         protocol_name = request.POST.get('PlcProtocol')
@@ -105,23 +101,12 @@ def test(request):
         print(protocol_name)
         result = PlcProtocol.getData(
             protocol_name, AddressMemory, ip, int(port), rack, slot)
-
         if result is not None:
             plc_data.append({'address': AddressMemory,
                             'data': result, 'variable_name': var_name})
         else:
             messages.error(request, "Check Your Connection")
         return render(request, "iiot/test.html", {'plc_data': plc_data})
-
-        # if S7PLCLogo.connectConnection()==True:
-        #         data=S7PLCLogo.readData(AddressMemory)
-        #         plc_data.update({'address': AddressMemory, 'data': data, 'variable_name': var_name})
-        #         print(plc_data)
-        # else:
-        #         messages.error(request,"Connection Error")
-        # return render(request,"iiot/test.html",{'form':form,'plc_data': plc_data})
-        # messages.info(request,'You clicked the submit button')
-        # return redirect(test)
 
 
 def testLocal(request):
@@ -130,18 +115,14 @@ def testLocal(request):
     if request.method == 'GET':
         return render(request, "iiot/test.html")
     elif request.method == 'POST':
-        # PlcAllInOne.getData(protocol_name)
         var_name = request.POST.get('variable_name')
-        # print(var_name)
         AddressMemory = request.POST.get('AddressMemory')
 
         protocol_name = request.POST.get('PlcProtocol')
-        # print(protocol_name)
         plc_data.append({'address': AddressMemory, 'data': 5,
                         'variable_name': var_name})
-        # print(plc_data)
-        # print(plc_data.get('variable_name'))
         return render(request, "iiot/test.html", {'plc_data': plc_data})
+
 
 @login_required
 def registerInputDevice(request):
@@ -163,6 +144,7 @@ def registerInputDevice(request):
         inputDeviceForm = InputDeviceForm()
         return render(request, 'iiot/registerInputDevice.html', {"inputDeviceForm": inputDeviceForm})
 
+
 @login_required
 def registerMqtt(request):
 
@@ -182,6 +164,7 @@ def registerMqtt(request):
     elif request.method == 'GET':
         mqttServerForm = MqttServerForm()
         return render(request, 'iiot/registerMqtt.html', {"mqttServerForm": mqttServerForm})
+
 
 @login_required
 def editInputDevice(request, device_id):
@@ -203,6 +186,7 @@ def editInputDevice(request, device_id):
     except Exception as e:
         messages.error(request, 'An error occurred while editing InputDevice')
     return redirect(listDevices)
+
 
 @login_required
 def editMeasurement(request, id):
@@ -226,6 +210,7 @@ def editMeasurement(request, id):
         messages.error(request, 'An error occurred while editing InputDevice')
     return redirect(listDevices)
 
+
 @login_required
 def editMqtt(request, id):
     try:
@@ -246,6 +231,7 @@ def editMqtt(request, id):
         messages.error(request, 'An error occurred while editing Mqtt Server')
     return redirect(listDevices)
 
+
 @login_required
 def removeMqtt(request, id):
     try:
@@ -260,6 +246,7 @@ def removeMqtt(request, id):
     except Exception as e:
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
+
 
 @login_required
 def removeMeasurement(request, id):
@@ -276,6 +263,7 @@ def removeMeasurement(request, id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listMeasurements)
 
+
 @login_required
 def removeInputAddress(request, address_id):
     try:
@@ -290,6 +278,7 @@ def removeInputAddress(request, address_id):
     except Exception as e:
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listInputAddresses)
+
 
 @login_required
 def removeInputDevice(request, device_id):
@@ -306,6 +295,7 @@ def removeInputDevice(request, device_id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
 
+
 @login_required
 def removeInfluxDB(request, device_id):
     try:
@@ -321,6 +311,7 @@ def removeInfluxDB(request, device_id):
         messages.error(request, 'An error occurred while removing Mqtt Server')
     return redirect(listDevices)
 
+
 @login_required
 def addInputAddress(request):
     # Attempt to fetch the input device; return 404 if not found
@@ -332,15 +323,10 @@ def addInputAddress(request):
         if inputAddressForm.is_valid():
             # Create a new InputAddress instance, but don't save it to the database yet
             inputAddress = inputAddressForm.save(commit=False)
-            # Assign the device to the InputAddress instance
-            # if inputDevice is not None:
-            #     inputAddress.device = inputDevice
-            # Save the InputAddress to the database
             inputAddress.save()
-
             # Show success message and redirect
-            messages.success(request, f'{inputAddress.variable_name} added successfully to {
-                             inputAddress.device.device_name}.')
+            messages.success(
+                request, f'{inputAddress.variable_name} added successfully to {inputAddress.device.device_name}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect('ListInputAddress')
 
@@ -355,8 +341,8 @@ def addInputAddress(request):
     # Render the form with context
     return render(request, 'iiot/editInputAddress.html', {
         'inputAddressForm': inputAddressForm,
-        # 'inputDevice': inputDevice
     })
+
 
 @login_required
 def addInfluxMeasurement(request):
@@ -369,11 +355,10 @@ def addInfluxMeasurement(request):
         if influxMeasurementForm.is_valid():
 
             database = influxMeasurementForm.cleaned_data['database']
-            # if InfluxDb.connectConnection(database.device_name,database.port)
             influxMeasurement = influxMeasurementForm.save()
 
-            messages.success(request, f'{influxMeasurement.measurement_name} added successfully to {
-                             influxMeasurement.database}.')
+            messages.success(
+                request, f'{influxMeasurement.measurement_name} added successfully to {influxMeasurement.database}.')
             # Adjust this to the correct view name or path for listing devices
             return redirect(listDevices)
 
@@ -391,10 +376,9 @@ def addInfluxMeasurement(request):
 
     })
 
+
 @login_required
 def addInfluxDB(request):
-    # Attempt to fetch the input device; return 404 if not found
-    # inputDevice = InputDevices.objects.get(device_id=device_id)
 
     if request.method == 'POST':
         influxServerForm = InfluxServerForm(request.POST)
@@ -403,8 +387,6 @@ def addInfluxDB(request):
             # Create a new InputAddress instance, but don't save it to the database yet
             influxServer = influxServerForm.save()
             try:
-
-                
 
                 InfluxDb.connectConnection(
                     influxServer.ip_address, influxServer.port)
@@ -418,8 +400,8 @@ def addInfluxDB(request):
                         db_name=db_name, duration=duration)
 
             # Show success message and redirect
-                messages.success(request, f' {influxServer.device_name} save successfully to {
-                    influxServer.device_name}.')
+                messages.success(
+                    request, f' {influxServer.device_name} save successfully to {influxServer.device_name}.')
 
                 return redirect(listDevices)
             except:
@@ -436,6 +418,7 @@ def addInfluxDB(request):
             'myform': influxServerForm,
             # 'inputDevice': inputDevice
         })
+
 
 @login_required
 def editInfluxDB(request, device_id):
@@ -460,8 +443,8 @@ def editInfluxDB(request, device_id):
                     InfluxDb.createRetentionPolicy(
                         db_name=db_name, duration=duration)
 
-                messages.success(request, f' {influxServer.device_name} updated successfully to {
-                    influxServer.device_name}.')
+                messages.success(
+                    request, f' {influxServer.device_name} updated successfully to {influxServer.device_name}.')
             # Adjust this to the correct view name or path for listing devices
                 return redirect(listDevices)
             except:
@@ -480,6 +463,7 @@ def editInfluxDB(request, device_id):
         'myform': influxServerForm,
         # 'inputDevice': inputDevice
     })
+
 
 @login_required
 def editInputAddress(request, address_id):
@@ -504,11 +488,11 @@ def editInputAddress(request, address_id):
         messages.error(request, 'An error occurred while editing InputDevice')
         return redirect(listInputAddresses)
 
+
 @login_required
 def pi_profile_view(request):
     networks = PiProfile.get_unique_networks()
     wifiNames = PiProfile.get_ssid_list(networks)
-    # wifiNames=PiProfile.get_ssid_list(networks)
 
     print(wifiNames)
 
@@ -519,13 +503,9 @@ def pi_profile_view(request):
 
     }
     form = PiInfoForm(initial=initial_data)
-    # form=PiInfoForm()
     if request.method == 'POST':
         form = PiInfoForm(request.POST)
         if form.is_valid():
-            # hostname=request.POST.get('pi_name')
-            # wifi_name=request.POST.get('wifi_name')
-            # wifi_password=request.POST.get('wifi_password')
             hostname = form.cleaned_data['pi_name']
 
             PiProfile.set_hostname(hostname)
@@ -533,6 +513,7 @@ def pi_profile_view(request):
             form = PiInfoForm(initial=initial_data)
 
     return render(request, 'iiot/form.html', {'myform': form})
+
 
 @login_required
 def pi_wifi_view(request):
@@ -553,6 +534,7 @@ def pi_wifi_view(request):
         form = PiWifiForm(wifiNames=wifiNames)
 
     return render(request, 'iiot/form.html', {'myform': form})
+
 
 @login_required
 def influx_database_view(request):
@@ -579,6 +561,7 @@ def influx_database_view(request):
     databases = InfluxDb.list_databases()  # List all databases
     return render(request, 'iiot/influx_database.html', {'form': form, 'databases': databases})
 
+
 @login_required
 def create_measurement_view(request):
     # Fetch the list of databases created from InfluxDB
@@ -598,8 +581,8 @@ def create_measurement_view(request):
                 # Assuming create_measurement interacts with InfluxDB
                 InfluxDb.create_measurement(
                     database_name, measurement_name, field_name, field_value)
-                messages.success(request, f"Measurement '{measurement_name}' created in '{
-                                 database_name}' with field '{field_name}'={field_value}")
+                messages.success(
+                    request, f"Measurement '{measurement_name}' created in '{database_name}' with field '{field_name}'={field_value}")
             except Exception as e:
                 messages.error(
                     request, f"Error creating measurement: {str(e)}")
