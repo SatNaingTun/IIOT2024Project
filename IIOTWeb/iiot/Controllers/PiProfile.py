@@ -2,8 +2,8 @@
 import os
 import socket
 import platform
-import pywifi
-from pywifi import const, Profile
+# import pywifi
+# from pywifi import const, Profile
 import time
 
 
@@ -39,6 +39,13 @@ def get_ip_address():
 
 def connect_to_wifi(ssid, password):
     """Connect to a Wi-Fi network with the specified SSID and password."""
+    try:
+        import pywifi
+        from pywifi import const, Profile
+    except ImportError:
+        print("pywifi module is not installed. Please install it using 'pip install pywifi'.")
+        return False
+    
     wifi = pywifi.PyWiFi()
     iface = wifi.interfaces()[0]
     iface.disconnect()
